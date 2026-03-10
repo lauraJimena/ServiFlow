@@ -1,0 +1,33 @@
+﻿body {
+    background: linear-gradient(95deg, #0F2027, #203A43);
+    font-family: Arial, Helvetica, sans-serif;
+ 
+   
+}
+h2 {
+    font-size: 50px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-shadow: 0 3px 0 rgba(0,0,0,.6);
+    color: white;
+    margin-top: 80px;
+}
+form{
+   align-content:center;
+   align-items:center;
+   margin-top:40px;
+}
+input [type=file] {
+    border-radius: 20px;
+    color: white;
+}
+input{
+    border-radius: 20px;
+   
+}
+div input{
+    margin-bottom:15px;
+}
+label{
+    color: white;
+}

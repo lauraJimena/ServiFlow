@@ -1,0 +1,27 @@
+﻿@model ServiFlow.Models.Emprendimiento
+<link rel="stylesheet" href="~/css/Create.css" asp-append-version="true" />
+<h2>Crear Emprendimiento</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div>
+        <label>Nombre</label>
+        <input asp-for="Nombre" />
+    </div>
+
+    <div>
+        <label>Tipo Servicio</label>
+        <input asp-for="TipoServicio" />
+    </div>
+
+    <div>
+        <label>Descripción</label>
+        <input asp-for="Descripcion" />
+    </div>
+    <div>
+    <label>Imagen</label>
+        <input type="file" name="ImagenArchivo" />
+    </div>
+
+    <button type="submit">Guardar</button>
+    
+</form>

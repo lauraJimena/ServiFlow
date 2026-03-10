@@ -1,0 +1,45 @@
+﻿@model IEnumerable<ServiFlow.Models.Emprendimiento>
+
+<link rel="stylesheet" href="~/css/IndexGeneral.css" />
+<h2>Lista de Emprendimientos</h2>
+
+
+<a asp-action="Create">Crear nuevo</a>
+
+<table>
+    <tr>
+        <th>Nombre</th>
+        <th>Tipo</th>
+        <th>Descripción</th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>@item.Nombre</td>
+        <td>@item.TipoServicio</td>
+        <td>@item.Descripcion</td>
+        <td><a asp-action="Edit" asp-route-id="@item.Id">Editar</a></td>
+        <td><a asp-controller="Emprendimientos"
+           asp-action="Delete"
+           asp-route-id="@item.Id">
+           Eliminar
+        </a></td>
+    </tr>
+}
+</table>
+@if (TempData["Mensaje"] != null)
+{
+    <div class="overlay">
+        <div class="modal-success">
+            <h3>Éxito</h3>
+            <p>@TempData["Mensaje"]</p>
+            <button onclick="cerrarModal()">Cerrar</button>
+        </div>
+    </div>
+}
+<script>
+function cerrarModal() {
+    document.querySelector('.overlay').style.display = 'none';
+}
+</script>

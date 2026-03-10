@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Emprendimiento>
+
+<link rel="stylesheet" href="~/css/IndexGeneral.css" asp-append-version="true" />
+
+<section class="hero">
+    <h1>Portafolio de Servicios</h1>
+    <p>Elige un emprendimiento y reserva tu cita.</p>
+</section>
+
+<section class="grid-servicios">
+@foreach (var e in Model)
+{
+    <article class="card-servicio">
+        <img class="card-img" src="@e.ImagenUrl" alt="@e.Nombre" />
+
+        <div class="card-overlay"></div>
+
+        <div class="card-content">
+            <h3 class="card-title">@e.Nombre</h3>
+            <span class="card-sub">@e.TipoServicio</span>
+            <p class="card-desc">@e.Descripcion</p>
+
+            <a class="btn-reservar"
+               asp-controller="Citas"
+               asp-action="Create"
+               asp-route-emprendimientoId="@e.Id">
+                Reservar cita
+               @*  <a asp-action="Edit" asp-route-id="@e.Id">Editar</a> *@
+                <a asp-controller="Emprendimientos" asp-action="Delete" asp-route-id="@e.Id">Eliminar</a>
+            </a>
+        </div>
+    </article>
+}
+</section>
