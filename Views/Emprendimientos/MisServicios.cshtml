@@ -1,45 +1,97 @@
 ﻿@model IEnumerable<ServiFlow.Models.Emprendimiento>
+@using System.Linq
 
-<link rel="stylesheet" href="~/css/IndexGeneral.css" />
-<h2>Lista de Emprendimientos</h2>
-
-
-<a asp-action="Create">Crear nuevo</a>
-
-<table>
-    <tr>
-        <th>Nombre</th>
-        <th>Tipo</th>
-        <th>Descripción</th>
-    </tr>
-
-@foreach (var item in Model)
-{
-    <tr>
-        <td>@item.Nombre</td>
-        <td>@item.TipoServicio</td>
-        <td>@item.Descripcion</td>
-        <td><a asp-action="Edit" asp-route-id="@item.Id">Editar</a></td>
-        <td><a asp-controller="Emprendimientos"
-           asp-action="Delete"
-           asp-route-id="@item.Id">
-           Eliminar
-        </a></td>
-    </tr>
+@{
+    ViewData["Title"] = "Mis Servicios";
 }
-</table>
+
+<link rel="stylesheet" href="~/css/IndexGeneral.css" asp-append-version="true" />
+
+<section class="servicios-page">
+    <div class="servicios-container">
+
+        <div class="servicios-header">
+            <div>
+                <h1>Mis servicios</h1>
+                <p>Gestiona los emprendimientos y servicios publicados en ServiFlow.</p>
+            </div>
+
+            <a asp-action="Create" class="btn-crear">
+                + Crear nuevo
+            </a>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="tabla-wrapper">
+                <table class="tabla-servicios">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th class="acciones-col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="nombre-col">@item.Nombre</td>
+
+                                <td>
+                                    <span class="badge-tipo">@item.TipoServicio</span>
+                                </td>
+
+                                <td class="descripcion-col">
+                                    @item.Descripcion
+                                </td>
+
+                                <td class="acciones">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn-accion editar">
+                                        Editar
+                                    </a>
+
+                                    <a asp-controller="Emprendimientos"
+                                       asp-action="Delete"
+                                       asp-route-id="@item.Id"
+                                       class="btn-accion eliminar">
+                                        Eliminar
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <h3>No tienes servicios registrados</h3>
+                <p>Empieza creando tu primer emprendimiento o servicio.</p>
+                <a asp-action="Create" class="btn-crear">Crear nuevo</a>
+            </div>
+        }
+    </div>
+</section>
+
 @if (TempData["Mensaje"] != null)
 {
-    <div class="overlay">
+    <div class="overlay" id="modalExito">
         <div class="modal-success">
             <h3>Éxito</h3>
             <p>@TempData["Mensaje"]</p>
-            <button onclick="cerrarModal()">Cerrar</button>
+            <button type="button" onclick="cerrarModal()">Cerrar</button>
         </div>
     </div>
 }
+
 <script>
-function cerrarModal() {
-    document.querySelector('.overlay').style.display = 'none';
-}
+    function cerrarModal() {
+        const modal = document.getElementById('modalExito');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
 </script>

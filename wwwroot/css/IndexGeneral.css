@@ -11,22 +11,55 @@ body {
 
 /* Título tipo “Portafolio de Servicios” */
 .hero {
-    padding: 40px 60px 10px 0px;
+    padding: 55px 70px 25px;
 }
 
-    .hero h1 {
-        margin: 0;
-        font-size: 54px;
-        font-weight: 900;
-        letter-spacing: 1px;
-        text-shadow: 0 3px 0 rgba(0,0,0,.6);
-    }
 
-    .hero p {
-        margin-top: 10px;
-        color: #cfcfcf;
-        font-size: 16px;
-    }
+hero-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.hero-text {
+    max-width: 760px;
+}
+
+.hero-tag {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    color: rgba(255,255,255,0.9);
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.14);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: 68px;
+    line-height: 1;
+    font-weight: 900;
+    color: #f8f8f8;
+    letter-spacing: -1.5px;
+    text-shadow: 4px 4px 0 rgba(0,0,0,0.28);
+}
+
+.hero-subtitle {
+    margin-top: 14px;
+    margin-bottom: 0;
+    font-size: 20px;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.88);
+    max-width: 680px;
+}
 
 /* Grid de tarjetas */
 .grid-servicios {
@@ -123,7 +156,21 @@ body {
     }
 
     .hero {
-        padding: 30px 20px 10px 20px;
+        padding: 40px 24px 20px;
+    }
+    .hero h1 {
+        font-size: 46px;
+    }
+
+    .hero-subtitle {
+        font-size: 17px;
+    }
+
+    .crud-submenu {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        border-radius: 20px;
     }
 
     .grid-servicios {
@@ -181,5 +228,407 @@ body {
     to {
         transform: scale(1);
         opacity: 1;
+    }
+}
+
+/* SUBMENU */
+.crud-submenu {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 18px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+}
+
+.crud-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.92);
+    white-space: nowrap;
+}
+
+.crud-link {
+    position: relative;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.82);
+    transition: color 0.25s ease;
+}
+
+    .crud-link:hover {
+        color: #ffffff;
+    }
+
+    .crud-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -4px;
+        width: 0;
+        height: 2px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.95);
+        transition: width 0.25s ease;
+    }
+
+    .crud-link:hover::after {
+        width: 100%;
+    }
+
+.submenu-separator {
+    width: 1px;
+    height: 18px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 10px;
+}
+
+/* BOTONES DE TARJETA */
+.card-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.btn-card {
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    transition: all 0.25s ease;
+    border: none;
+}
+
+.btn-reservar {
+    background: #ffffff;
+    color: #111827;
+}
+
+    .btn-reservar:hover {
+        background: #e9f7ff;
+        transform: translateY(-2px);
+    }
+
+.btn-editar {
+    background: rgba(59, 130, 246, 0.90);
+    color: white;
+}
+
+    .btn-editar:hover {
+        background: rgba(59, 130, 246, 1);
+        transform: translateY(-2px);
+    }
+
+.btn-eliminar {
+    background: rgba(220, 38, 38, 0.88);
+    color: white;
+}
+
+    .btn-eliminar:hover {
+        background: rgba(220, 38, 38, 1);
+        transform: translateY(-2px);
+    }
+
+/* paginación */
+.pagination-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 0 20px 60px;
+}
+
+.page-link,
+.page-number,
+.page-disabled {
+    min-width: 44px;
+    text-align: center;
+    text-decoration: none;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.page-link,
+.page-number {
+    color: white;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    transition: all 0.25s ease;
+}
+
+    .page-link:hover,
+    .page-number:hover {
+        color: white;
+        background: rgba(255,255,255,0.16);
+    }
+
+    .page-number.active {
+        background: white;
+        color: #0f2732;
+    }
+
+.page-disabled {
+    color: rgba(255,255,255,0.45);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    cursor: not-allowed;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(90deg, #02141f, #173848, #203844);
+    color: #ffffff;
+}
+
+.servicios-page {
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+.servicios-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(6px);
+}
+
+.servicios-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
+
+    .servicios-header h1 {
+        margin: 0 0 8px 0;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #ffffff;
+    }
+
+    .servicios-header p {
+        margin: 0;
+        color: #c8d6df;
+        font-size: 0.98rem;
+    }
+
+.btn-crear {
+    display: inline-block;
+    background: linear-gradient(135deg, #00c2ff, #0077ff);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 12px 18px;
+    border-radius: 12px;
+    transition: 0.25s ease;
+    box-shadow: 0 6px 16px rgba(0, 119, 255, 0.25);
+}
+
+    .btn-crear:hover {
+        transform: translateY(-2px);
+        opacity: 0.95;
+    }
+
+.tabla-wrapper {
+    overflow-x: auto;
+    border-radius: 16px;
+}
+
+.tabla-servicios {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+    .tabla-servicios thead {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .tabla-servicios th {
+        text-align: left;
+        padding: 16px;
+        font-size: 0.95rem;
+        color: #ffffff;
+        font-weight: 700;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .tabla-servicios td {
+        padding: 16px;
+        vertical-align: middle;
+        color: #e8f0f5;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .tabla-servicios tbody tr {
+        transition: background 0.2s ease;
+    }
+
+        .tabla-servicios tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+.nombre-col {
+    font-weight: 600;
+    color: #ffffff;
+    min-width: 180px;
+}
+
+.descripcion-col {
+    min-width: 320px;
+    color: #d2dee6;
+    line-height: 1.45;
+}
+
+.badge-tipo {
+    display: inline-block;
+    background: rgba(0, 194, 255, 0.15);
+    color: #7fdfff;
+    border: 1px solid rgba(127, 223, 255, 0.25);
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.acciones-col {
+    width: 190px;
+}
+
+.acciones {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-accion {
+    text-decoration: none;
+    padding: 9px 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: 0.2s ease;
+}
+
+    .btn-accion.editar {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+        .btn-accion.editar:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+    .btn-accion.eliminar {
+        background: rgba(255, 77, 77, 0.12);
+        color: #ff8c8c;
+        border: 1px solid rgba(255, 77, 77, 0.25);
+    }
+
+        .btn-accion.eliminar:hover {
+            background: rgba(255, 77, 77, 0.2);
+        }
+
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+}
+
+    .empty-state h3 {
+        margin-bottom: 10px;
+        color: #ffffff;
+    }
+
+    .empty-state p {
+        color: #c8d6df;
+        margin-bottom: 20px;
+    }
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-success {
+    width: 90%;
+    max-width: 420px;
+    background: #0f2230;
+    color: white;
+    border-radius: 18px;
+    padding: 28px;
+    text-align: center;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+    .modal-success h3 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        font-size: 1.4rem;
+    }
+
+    .modal-success p {
+        color: #d7e4eb;
+        margin-bottom: 20px;
+    }
+
+    .modal-success button {
+        background: linear-gradient(135deg, #00c2ff, #0077ff);
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+        .modal-success button:hover {
+            opacity: 0.95;
+        }
+
+@media (max-width: 768px) {
+    .servicios-container {
+        padding: 20px;
+    }
+
+    .servicios-header h1 {
+        font-size: 1.6rem;
+    }
+
+    .tabla-servicios th,
+    .tabla-servicios td {
+        padding: 12px;
+    }
+
+    .acciones {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
