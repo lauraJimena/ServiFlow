@@ -3,8 +3,27 @@
 <link rel="stylesheet" href="~/css/IndexGeneral.css" asp-append-version="true" />
 
 <section class="hero">
-    <h1>Portafolio de Servicios</h1>
-    <p>Elige un emprendimiento y reserva tu cita.</p>
+    <div class="hero-header">
+        <div class="hero-text">
+            
+            <h1>Portafolio de Servicios</h1>
+            <p class="hero-subtitle">Elige un emprendimiento, agenda una cita o gestiona tu información desde el menú rápido.</p>
+        </div>
+
+        <nav class="crud-submenu">
+            
+
+            <a class="crud-link" asp-controller="Emprendimientos" asp-action="Create">
+                Crear nuevo
+            </a>
+
+            <span class="submenu-separator"></span>
+
+            <a class="crud-link" asp-controller="Emprendimientos" asp-action="MisServicios">
+                Administrar servicios
+            </a>
+        </nav>
+    </div>
 </section>
 
 <section class="grid-servicios">
@@ -20,15 +39,66 @@
             <span class="card-sub">@e.TipoServicio</span>
             <p class="card-desc">@e.Descripcion</p>
 
-            <a class="btn-reservar"
-               asp-controller="Citas"
-               asp-action="Create"
-               asp-route-emprendimientoId="@e.Id">
-                Reservar cita
-               @*  <a asp-action="Edit" asp-route-id="@e.Id">Editar</a> *@
-                <a asp-controller="Emprendimientos" asp-action="Delete" asp-route-id="@e.Id">Eliminar</a>
-            </a>
+                <div class="card-buttons">
+                    <a class="btn-card btn-reservar"
+                       asp-controller="Citas"
+                       asp-action="Create"
+                       asp-route-emprendimientoId="@e.Id">
+                        Reservar
+                    </a>
+
+                    <a class="btn-card btn-editar"
+                       asp-controller="Emprendimientos"
+                       asp-action="Edit"
+                       asp-route-id="@e.Id">
+                        Editar
+                    </a>
+
+                    <a class="btn-card btn-eliminar"
+                       asp-controller="Emprendimientos"
+                       asp-action="Delete"
+                       asp-route-id="@e.Id">
+                        Eliminar
+                    </a>
+                </div>
         </div>
     </article>
 }
 </section>
+
+@{
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+}
+
+@if (totalPages > 1)
+{
+    <nav class="pagination-wrap">
+        @if (currentPage > 1)
+        {
+            <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)">Anterior</a>
+        }
+        else
+        {
+            <span class="page-disabled">Anterior</span>
+        }
+
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <a class="page-number @(i == currentPage ? "active" : "")"
+               asp-action="Index"
+               asp-route-page="@i">
+                @i
+            </a>
+        }
+
+        @if (currentPage < totalPages)
+        {
+            <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)">Siguiente</a>
+        }
+        else
+        {
+            <span class="page-disabled">Siguiente</span>
+        }
+    </nav>
+}
