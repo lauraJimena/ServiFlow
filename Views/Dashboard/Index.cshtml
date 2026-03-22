@@ -1,19 +1,21 @@
-﻿<h2>Tablero del Emprendedor</h2>
+﻿@using ServiFlow.Models
+
+<h2>Tablero del Emprendedor</h2>
 
 <h3>Próximas citas</h3>
 <ul>
-@foreach (var c in (List<Cita>)ViewBag.Citas)
-{
-    <li>@c.NombreCliente - @c.Servicio - @c.Fecha</li>
-}
+    @foreach (var c in (List<Cita>)ViewBag.Citas)
+    {
+        <li>@c.NombreCliente - @c.Servicio - @c.Fecha.ToString("dd/MM/yyyy HH:mm")</li>
+    }
 </ul>
 
 <h3>Tareas</h3>
 <ul>
-@foreach (var t in (List<Tarea>)ViewBag.Tareas)
-{
-    <li>
-        @(t.Completada ? "✅" : "🟡") @t.Descripcion
-    </li>
-}
+    @foreach (var t in (List<Tarea>)ViewBag.Tareas)
+    {
+        <li>
+            @(t.Completada ? "✅" : "🟡") @t.Descripcion
+        </li>
+    }
 </ul>

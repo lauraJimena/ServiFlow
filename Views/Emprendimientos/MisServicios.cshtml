@@ -48,16 +48,30 @@
                                 </td>
 
                                 <td class="acciones">
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn-accion editar">
+                                    <a asp-controller="Kanban"
+                                       asp-action="Index"
+                                       asp-route-emprendimientoId="@item.Id"
+                                       class="btn-accion editar">
+                                        Abrir Kanban
+                                    </a>
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@item.Id"
+                                       class="btn-accion editar">
                                         Editar
                                     </a>
 
-                                    <a asp-controller="Emprendimientos"
-                                       asp-action="Delete"
-                                       asp-route-id="@item.Id"
-                                       class="btn-accion eliminar">
-                                        Eliminar
-                                    </a>
+                                    <form asp-action="Delete"
+                                          asp-route-id="@item.Id"
+                                          method="post"
+                                          style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit"
+                                                class="btn-accion eliminar"
+                                                onclick="return confirm('¿Seguro que deseas eliminar este emprendimiento?');">
+                                            Eliminar
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         }

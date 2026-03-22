@@ -13,21 +13,22 @@ public class HomeController : Controller
 
     public IActionResult Index(int page = 1)
     {
-        int pageSize = 10;
+        int pageSize = 6;
 
         var query = _context.Emprendimientos
-            .AsNoTracking()
-            .OrderBy(e => e.Id);
+            .Where(e => e.EsPropio);
 
         int totalItems = query.Count();
+        int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
         var emprendimientos = query
+            .OrderBy(e => e.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
 
         ViewBag.CurrentPage = page;
-        ViewBag.TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+        ViewBag.TotalPages = totalPages;
 
         return View(emprendimientos);
     }

@@ -13,8 +13,15 @@ namespace ServiFlow.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.Citas = _context.Citas.OrderByDescending(c => c.Fecha).Take(10).ToList();
-            ViewBag.Tareas = _context.Tareas.OrderBy(t => t.Completada).ToList();
+            ViewBag.Citas = _context.Citas
+                .OrderBy(c => c.Fecha)
+                .Take(10)
+                .ToList();
+
+            ViewBag.Tareas = _context.Tareas
+                .OrderBy(t => t.Completada)
+                .ToList();
+
             return View();
         }
     }

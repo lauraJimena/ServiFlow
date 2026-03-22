@@ -1,0 +1,185 @@
+﻿@model List<ServiFlow.Models.TareaKanban>
+@using ServiFlow.Models
+
+@{
+    ViewData["Title"] = "Kanban";
+
+    var porHacer = Model.Where(t => t.Estado == EstadoTarea.PorHacer).ToList();
+    var enProceso = Model.Where(t => t.Estado == EstadoTarea.EnProceso).ToList();
+    var terminado = Model.Where(t => t.Estado == EstadoTarea.Terminado).ToList();
+
+    var emprendimientoId = (int)ViewBag.EmprendimientoId;
+    var nombreEmprendimiento = ViewBag.NombreEmprendimiento as string;
+}
+
+<h1>🚀 Tablero Kanban - @nombreEmprendimiento</h1>
+
+<div style="margin-bottom: 20px;">
+    <a asp-controller="Emprendimientos"
+       asp-action="MisServicios">
+        ← Volver a Mis Servicios
+    </a>
+</div>
+
+<hr />
+
+<div>
+    <h2>Agregar tarea</h2>
+
+    <form asp-action="Crear" method="post">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" name="emprendimientoId" value="@emprendimientoId" />
+
+        <div>
+            <label>Título</label>
+            <input type="text" name="titulo" required />
+        </div>
+
+        <br />
+
+        <div>
+            <label>Descripción</label>
+            <textarea name="descripcion"></textarea>
+        </div>
+
+        <br />
+
+        <button type="submit">Agregar</button>
+    </form>
+</div>
+
+<hr />
+
+<div class="tablero-kanban">
+
+    <div class="columna-kanban" ondragover="permitirDrop(event)" ondrop="soltarTarea(event, 0)">
+        <h2>🟨 Por hacer</h2>
+
+        @if (porHacer.Any())
+        {
+            @foreach (var tarea in porHacer)
+            {
+                <div class="tarea-card"
+                     draggable="true"
+                     ondragstart="arrastrarTarea(event)"
+                     data-id="@tarea.Id"
+                     data-titulo="@tarea.Titulo"
+                     data-descripcion="@tarea.Descripcion">
+
+                    <span>@tarea.Titulo</span>
+
+                    <button type="button" class="btn-editar" onclick="abrirPopupDesdeElemento(this)">✏️</button>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No hay tareas en esta columna.</p>
+        }
+    </div>
+
+    <div class="columna-kanban" ondragover="permitirDrop(event)" ondrop="soltarTarea(event, 1)">
+        <h2>🟧 En proceso</h2>
+
+        @if (enProceso.Any())
+        {
+            @foreach (var tarea in enProceso)
+            {
+                <div class="tarea-card"
+                     draggable="true"
+                     ondragstart="arrastrarTarea(event)"
+                     data-id="@tarea.Id"
+                     data-titulo="@tarea.Titulo"
+                     data-descripcion="@tarea.Descripcion">
+
+                    <span>@tarea.Titulo</span>
+
+                    <button type="button" class="btn-editar" onclick="abrirPopupDesdeElemento(this)">✏️</button>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No hay tareas en esta columna.</p>
+        }
+    </div>
+
+    <div class="columna-kanban" ondragover="permitirDrop(event)" ondrop="soltarTarea(event, 2)">
+        <h2>🟩 Terminado</h2>
+
+        @if (terminado.Any())
+        {
+            @foreach (var tarea in terminado)
+            {
+                <div class="tarea-card"
+                     draggable="true"
+                     ondragstart="arrastrarTarea(event)"
+                     data-id="@tarea.Id"
+                     data-titulo="@tarea.Titulo"
+                     data-descripcion="@tarea.Descripcion">
+
+                    <span>@tarea.Titulo</span>
+
+                    <button type="button" class="btn-editar" onclick="abrirPopupDesdeElemento(this)">✏️</button>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No hay tareas en esta columna.</p>
+        }
+    </div>
+
+</div>
+
+<form id="formMoverDrag" method="post" asp-action="Mover" style="display:none;">
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="dragTareaId" name="tareaId" />
+    <input type="hidden" id="dragNuevoEstado" name="nuevoEstado" />
+    <input type="hidden" name="emprendimientoId" value="@emprendimientoId" />
+</form>
+
+<div id="popupTarea" class="popup-overlay">
+    <div class="popup">
+        <h3 id="popupTitulo"></h3>
+        <p id="popupDescripcion"></p>
+
+        <div class="popup-botones">
+            <form method="post" asp-action="Mover">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="tareaId" id="phId" />
+                <input type="hidden" name="nuevoEstado" value="0" />
+                <input type="hidden" name="emprendimientoId" value="@emprendimientoId" />
+                <button type="submit">🟨 Mover a Por hacer</button>
+            </form>
+
+            <form method="post" asp-action="Mover">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="tareaId" id="epId" />
+                <input type="hidden" name="nuevoEstado" value="1" />
+                <input type="hidden" name="emprendimientoId" value="@emprendimientoId" />
+                <button type="submit">🟧 Mover a En proceso</button>
+            </form>
+
+            <form method="post" asp-action="Mover">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="tareaId" id="tId" />
+                <input type="hidden" name="nuevoEstado" value="2" />
+                <input type="hidden" name="emprendimientoId" value="@emprendimientoId" />
+                <button type="submit">🟩 Mover a Terminado</button>
+            </form>
+
+            <form method="post" asp-action="Eliminar">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="tareaId" id="deleteId" />
+                <input type="hidden" name="emprendimientoId" value="@emprendimientoId" />
+                <button type="submit">🗑 Eliminar tarea</button>
+            </form>
+        </div>
+
+        <br />
+
+        <button type="button" onclick="cerrarPopup()">❌ Cerrar</button>
+    </div>
+</div>
