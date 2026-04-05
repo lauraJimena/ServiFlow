@@ -1,16 +1,10 @@
-﻿body {
-    background: linear-gradient(95deg, #0F2027, #203A43);
-    font-family: Arial, Helvetica, sans-serif;
- 
-   
-}
+﻿
 h2 {
     font-size: 50px;
     font-weight: 900;
     letter-spacing: 1px;
     text-shadow: 0 3px 0 rgba(0,0,0,.6);
     color: white;
-    margin-top: 80px;
 }
 form{
    align-content:center;
@@ -20,14 +14,73 @@ form{
 input [type=file] {
     border-radius: 20px;
     color: white;
+    width:100px;
 }
-input{
+input {
     border-radius: 20px;
-   
+    
 }
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,0.04) inset !important;
+        -webkit-text-fill-color: white !important;
+        transition: background-color 9999s ease-in-out 0s;
+    }
 div input{
     margin-bottom:15px;
 }
 label{
     color: white;
+}
+button{
+    margin-top:20px;
+}
+input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: bold; /* más grueso */
+    font-size:18px;
+}
+.file-upload {
+    display: block;
+    padding: 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+    border: 2px dashed rgba(255, 0, 200, 0.4);
+    background: rgba(255, 0, 200, 0.05);
+    color: white;
+    font-weight: 500;
+    transition: 0.3s;
+    width: 480px;
+}
+
+    /* ocultamos el input real */
+    .file-upload input {
+        display: none;
+    }
+
+    /* hover bonito */
+    .file-upload:hover {
+        background: rgba(255, 0, 200, 0.1);
+        box-shadow: 0 0 15px rgba(255, 0, 200, 0.3);
+    }
+
+/* imagen preview */
+.preview-img {
+    margin-top: 10px;
+    max-width: 160px;
+    border-radius: 10px;
+    display: none;
+    box-shadow: 0 0 15px rgba(255, 0, 200, 0.3);
+}
+
+.registro-img .img-crear {
+    margin-top:-10px !important;
+    max-width: 400px;
+    filter: drop-shadow(0 0 20px rgba(255, 0, 200, 0.3));
+}
+.registro-container{
+    margin-bottom:-50px;
+
 }

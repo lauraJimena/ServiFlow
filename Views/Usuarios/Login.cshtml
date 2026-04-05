@@ -1,0 +1,54 @@
+﻿@model ServiFlow.ViewModels.LoginViewModel
+<link rel="stylesheet" href="~/css/Create.css" asp-append-version="true" />
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+<div class="registro-container">
+
+        <!-- FORMULARIO -->
+    <div class="registro-form">
+    <h2>Iniciar sesión</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div style="color:red; margin-bottom:10px;">
+            @ViewBag.Error
+        </div>
+    }
+
+    <form asp-action="Login" method="post">
+        <div>
+            <label asp-for="Email" class="label-login">Correo Electrónico</label>
+                <input asp-for="Email" class="input-custom" />
+            <span asp-validation-for="Email" style="color:red"></span>
+        </div>
+
+        <div style="margin-top:10px;">
+                <label asp-for="Password" class="label-login">Contraseña</label><br />
+                <input asp-for="Password" type="password" class="input-custom" />
+            <span asp-validation-for="Password" style="color:red"></span>
+        </div>
+
+        <div style="margin-top:15px;">
+            <button type="submit">Entrar</button>
+        </div>
+
+        <div style="margin-top:10px;">
+            <a asp-action="Registro" class="btn-sec">Crear cuenta</a>
+        </div>
+    </form>
+    </div>
+
+    <!-- IMAGEN -->
+    <div class="login-img">
+        <img src="~/images/login.png" alt="Registro ServiFlow" class="img-login">
+    </div>
+
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

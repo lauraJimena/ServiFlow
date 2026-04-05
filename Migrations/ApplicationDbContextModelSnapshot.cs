@@ -44,6 +44,31 @@ namespace ServiFlow.Migrations
                     b.ToTable("Citas");
                 });
 
+            modelBuilder.Entity("ServiFlow.Models.Disponibilidad", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Dia")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("EmprendimientoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<TimeSpan>("HoraFin")
+                        .HasColumnType("TEXT");
+
+                    b.Property<TimeSpan>("HoraInicio")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmprendimientoId");
+
+                    b.ToTable("Disponibilidades");
+                });
+
             modelBuilder.Entity("ServiFlow.Models.Emprendimiento", b =>
                 {
                     b.Property<int>("Id")
@@ -103,6 +128,33 @@ namespace ServiFlow.Migrations
                     b.ToTable("TareasKanban");
                 });
 
+            modelBuilder.Entity("ServiFlow.Models.Usuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TipoUsuario")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Usuarios");
+                });
+
             modelBuilder.Entity("Tarea", b =>
                 {
                     b.Property<int>("Id")
@@ -132,6 +184,17 @@ namespace ServiFlow.Migrations
                     b.Navigation("Emprendimiento");
                 });
 
+            modelBuilder.Entity("ServiFlow.Models.Disponibilidad", b =>
+                {
+                    b.HasOne("ServiFlow.Models.Emprendimiento", "Emprendimiento")
+                        .WithMany("Disponibilidades")
+                        .HasForeignKey("EmprendimientoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Emprendimiento");
+                });
+
             modelBuilder.Entity("ServiFlow.Models.TareaKanban", b =>
                 {
                     b.HasOne("ServiFlow.Models.Emprendimiento", "Emprendimiento")
@@ -145,6 +208,8 @@ namespace ServiFlow.Migrations
 
             modelBuilder.Entity("ServiFlow.Models.Emprendimiento", b =>
                 {
+                    b.Navigation("Disponibilidades");
+
                     b.Navigation("TareasKanban");
                 });
 #pragma warning restore 612, 618

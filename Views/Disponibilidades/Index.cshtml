@@ -1,0 +1,134 @@
+﻿@model ServiFlow.ViewModels.DisponibilidadVM
+<link rel="stylesheet" href="~/css/Disponib.css" asp-append-version="true" />
+@{
+    ViewData["Title"] = "Horarios disponibles";
+}
+
+<h2 class="mb-4">Configurar horarios del emprendimiento</h2>
+<div class="caja-dispon">
+    <form method="get" asp-action="Index" class="mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-6 d-flex align-items-center">
+                <div style="flex:1;">
+                <label class="form-label">Selecciona tu emprendimiento</label>
+                <select name="emprendimientoId" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- Selecciona --</option>
+                    @foreach (var item in Model.Emprendimientos)
+                    {
+                        if (Model.EmprendimientoIdSeleccionado.HasValue && item.Value == Model.EmprendimientoIdSeleccionado.Value.ToString())
+                        {
+                            <option value="@item.Value" selected>@item.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                </select>
+                </div>
+                <img src="/images/horario.png" class="img-emprendimiento">
+            </div>
+        </div>
+    </form>
+</div>
+@if (Model.EmprendimientoIdSeleccionado.HasValue)
+{
+    <div class="card mb-4">
+        <div class="card-header">
+            <strong>Agregar horario</strong>
+        </div>
+        <div class="card-body">
+            <form asp-action="Crear" method="post">
+                <input asp-for="NuevaDisponibilidad.EmprendimientoId" type="hidden" />
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label asp-for="NuevaDisponibilidad.Dia" class="form-label">Día</label>
+                        <select asp-for="NuevaDisponibilidad.Dia" class="form-select">
+                            <option value="1">Lunes</option>
+                            <option value="2">Martes</option>
+                            <option value="3">Miércoles</option>
+                            <option value="4">Jueves</option>
+                            <option value="5">Viernes</option>
+                            <option value="6">Sábado</option>
+                            <option value="0">Domingo</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="NuevaDisponibilidad.HoraInicio" class="form-label">Hora inicio</label>
+                        <input asp-for="NuevaDisponibilidad.HoraInicio" type="time" class="form-control" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="NuevaDisponibilidad.HoraFin" class="form-label">Hora fin</label>
+                        <input asp-for="NuevaDisponibilidad.HoraFin" type="time" class="form-control" />
+                    </div>
+                </div>
+                <input asp-for="NuevaDisponibilidad.EmprendimientoId" type="hidden" value="@Model.EmprendimientoIdSeleccionado" />
+                <button type="submit" class="btn btn-primary">Guardar horario</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <strong>Horarios registrados</strong>
+        </div>
+        <div class="card-body">
+            @if (Model.HorariosExistentes.Any())
+            {
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Día</th>
+                            <th>Hora inicio</th>
+                            <th>Hora fin</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var h in Model.HorariosExistentes)
+                        {
+                            <tr>
+                                <td>
+                                    @{
+                                        var diaTexto = h.Dia switch
+                                        {
+                                            DayOfWeek.Monday => "Lunes",
+                                            DayOfWeek.Tuesday => "Martes",
+                                            DayOfWeek.Wednesday => "Miércoles",
+                                            DayOfWeek.Thursday => "Jueves",
+                                            DayOfWeek.Friday => "Viernes",
+                                            DayOfWeek.Saturday => "Sábado",
+                                            DayOfWeek.Sunday => "Domingo",
+                                            _ => h.Dia.ToString()
+                                        };
+                                    }
+                                    @diaTexto
+                                </td>
+                                <td>@h.HoraInicio.ToString(@"hh\:mm")</td>
+                                <td>@h.HoraFin.ToString(@"hh\:mm")</td>
+                                <td>
+                                    <a asp-action="Eliminar" asp-route-id="@h.Id" class="btn btn-sm btn-danger">
+                                        Eliminar
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No hay horarios registrados para este emprendimiento.</p>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        Selecciona un emprendimiento para configurar su disponibilidad y que los clientes puedan agendar citas contigo.
+    </div>
+}

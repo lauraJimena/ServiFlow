@@ -1,13 +1,40 @@
 ﻿/* Fondo general */
+html, body {
+    margin: 0;
+    min-height: 100%;
+}
+
 body {
     margin: 0;
-    background: linear-gradient( 95deg, #0F2027, #203A43);
     min-height: 100vh;
-    background-attachment: fixed;
-    color: #EAEAEA;
-    color: #fff;
-    font-family: Arial, Helvetica, sans-serif;
+   
+    color: white;
+    position: relative;
+    overflow-x: hidden;
 }
+
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(ellipse at bottom, rgba(255,0,200,0.28), transparent 70%);
+        filter: blur(80px);
+        z-index: -2;
+        pointer-events: none;
+    }
+
+    body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: radial-gradient(rgba(255,255,255,.7) 2px, transparent 2px), radial-gradient(rgba(255,200,255,.5) 2.5px, transparent 2.5px);
+        background-size: 120px 120px, 180px 180px;
+        background-position: 0 0, 60px 40px;
+        opacity: .6;
+        z-index: -1;
+        pointer-events: none;
+    }
+
 
 /* Título tipo “Portafolio de Servicios” */
 .hero {
@@ -22,11 +49,9 @@ hero-header {
     gap: 30px;
     flex-wrap: wrap;
 }
-
-.hero-text {
-    max-width: 760px;
+.hero-text{
+    margin-left:-70px;
 }
-
 .hero-tag {
     display: inline-block;
     margin-bottom: 12px;
@@ -58,16 +83,16 @@ hero-header {
     font-size: 20px;
     line-height: 1.5;
     color: rgba(255,255,255,0.88);
-    max-width: 680px;
+    margin-bottom:30px;
 }
 
 /* Grid de tarjetas */
 .grid-servicios {
     display: grid;
-    grid-template-columns: repeat(3, 2fr);
-    grid-auto-rows: 270px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 240px;
     gap: 25px;
-    padding: 0px 0px;
+    grid-auto-flow: dense;
 }
 
 /* Card */
@@ -77,22 +102,23 @@ hero-header {
     overflow: hidden;
     background: #111;
     box-shadow:2.5px 2.5px 2px gray;
+
 }
 
     /* Tarjetas grandes aleatorias */
     /* Algunas un poco más altas (sutil) */
-    .card-servicio:nth-child(3n+1) {
+    .card-servicio:nth-child(2n+1) {
         grid-row: span 2;
     }
 
     /* Nada ocupa 2 columnas, solo altura */
 
- 
+
 
 .card-img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover; /* 🔥 clave */
     transition: transform .4s ease;
 }
 
@@ -167,7 +193,7 @@ hero-header {
     }
 
     .crud-submenu {
-        width: 100%;
+        width: 1120px;
         justify-content: flex-start;
         flex-wrap: wrap;
         border-radius: 20px;
@@ -233,6 +259,8 @@ hero-header {
 
 /* SUBMENU */
 .crud-submenu {
+    margin-left: -70px;
+    width:1120px;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -296,16 +324,34 @@ hero-header {
 }
 
 .btn-card {
+    box-shadow: 0 0 5px rgba(255,255,255,0.5);
     text-decoration: none;
     padding: 10px 16px;
     border-radius: 12px;
     font-weight: 700;
     font-size: 14px;
     transition: all 0.25s ease;
-    border: none;
+    color: white;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
-
+    .btn-card:hover {
+        transform: translateY(-2px);
+        color:white;
+    }
+.btn-editar {
+    background:rgba(27,47,99,0.8);
+    margin-bottom:10px;
+    margin-top:10px;
+}
+    .btn-editar:hover {
+        background: rgba(27,47,99,0.7);
+    }
+.btn-eliminar {
+    background: rgba(27,47,99,0.8);
+}
 .btn-reservar {
+    box-shadow: 0 0 5px rgba(255,255,255,0.5);
     background: #ffffff;
     color: #111827;
 }
@@ -313,27 +359,9 @@ hero-header {
     .btn-reservar:hover {
         background: #e9f7ff;
         transform: translateY(-2px);
+        color: #111827;
     }
 
-.btn-editar {
-    background: rgba(59, 130, 246, 0.90);
-    color: white;
-}
-
-    .btn-editar:hover {
-        background: rgba(59, 130, 246, 1);
-        transform: translateY(-2px);
-    }
-
-.btn-eliminar {
-    background: rgba(220, 38, 38, 0.88);
-    color: white;
-}
-
-    .btn-eliminar:hover {
-        background: rgba(220, 38, 38, 1);
-        transform: translateY(-2px);
-    }
 
 /* paginación */
 .pagination-wrap {
@@ -385,7 +413,7 @@ hero-header {
 
 body {
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
     background: linear-gradient(90deg, #02141f, #173848, #203844);
     color: #ffffff;
 }
@@ -397,7 +425,7 @@ body {
 
 .servicios-container {
     max-width: 1200px;
-    margin: 0 auto;
+    margin-bottom: -50px;  
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 20px;
@@ -428,26 +456,16 @@ body {
         font-size: 0.98rem;
     }
 
-.btn-crear {
-    display: inline-block;
-    background: linear-gradient(135deg, #00c2ff, #0077ff);
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 12px 18px;
-    border-radius: 12px;
-    transition: 0.25s ease;
-    box-shadow: 0 6px 16px rgba(0, 119, 255, 0.25);
-}
-
-    .btn-crear:hover {
-        transform: translateY(-2px);
-        opacity: 0.95;
-    }
 
 .tabla-wrapper {
     overflow-x: auto;
     border-radius: 16px;
+    /* borde base */
+    border: 1px solid rgba(255, 255, 200, 0.2);
+    /* glow */
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+    overflow: hidden; /* para que la tabla respete bordes */
+
 }
 
 .tabla-servicios {
@@ -457,6 +475,9 @@ body {
     border-radius: 16px;
     background: rgba(255, 255, 255, 0.03);
 }
+    .tabla-servicios tbody tr:nth-child(even) {
+        background-color: rgba(32, 52, 89, 0.4);
+    }
 
     .tabla-servicios thead {
         background: rgba(255, 255, 255, 0.08);
@@ -468,15 +489,23 @@ body {
         font-size: 0.95rem;
         color: #ffffff;
         font-weight: 700;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 2px solid rgba(255, 255, 255, 0.08);
     }
 
     .tabla-servicios td {
         padding: 16px;
         vertical-align: middle;
         color: #e8f0f5;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
     }
+    .tabla-servicios tr {
+        transition: 0.2s;
+    }
+
+        .tabla-servicios tr:hover {
+            background: rgba(255, 0, 200, 0.05);
+            box-shadow: 0 0 10px rgba(255, 0, 200, 0.2);
+        }
 
     .tabla-servicios tbody tr {
         transition: background 0.2s ease;
@@ -525,16 +554,20 @@ body {
     border-radius: 10px;
     font-weight: 600;
     font-size: 0.9rem;
-    transition: 0.2s ease;
+    transition: all 0.25s ease;
+    box-shadow: 0 0 5px rgba(255,255,255,0.5);
 }
 
     .btn-accion.editar {
-        background: rgba(255, 255, 255, 0.08);
+        background: rgba(255, 0, 200, 0.1);
         color: #ffffff;
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(53, 14, 71, 0.09);
     }
 
         .btn-accion.editar:hover {
+            transform: translateY(-3px);
+            opacity: 0.95;
+            color: white;
             background: rgba(255, 255, 255, 0.15);
         }
 
@@ -545,7 +578,11 @@ body {
     }
 
         .btn-accion.eliminar:hover {
-            background: rgba(255, 77, 77, 0.2);
+            transform: translateY(-3px);
+            opacity: 0.95;
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+            border:none;
         }
 
 .empty-state {
@@ -632,3 +669,32 @@ body {
         align-items: flex-start;
     }
 }
+
+
+button, .btn-crear {
+    background: linear-gradient(90deg, #4a148c, #880e4f);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 28px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(255,255,255,0.5);
+    transition: all 0.25s ease;
+    text-decoration: none;
+}
+.btn-crear {
+    padding: 9px 20px;
+}
+    button:hover, .btn-crear:hover {
+        transform: translateY(-3px);
+        opacity: 0.95;
+        color: white;
+    }
+
+
+
+
+
+

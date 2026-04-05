@@ -2,6 +2,7 @@ html {
   font-size: 14px;
 }
 
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -18,6 +19,7 @@ html {
 }
 
 body {
+  
   margin-bottom: 60px;
 }
 
@@ -40,12 +42,14 @@ body {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2px 12px rgba(108, 99, 255, 0.5);
+    
 }
 
 .sf-navbar {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 16px 28px;
+    padding: 10px 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -100,15 +104,21 @@ body {
     }
 
 /* FOOTER */
-.footer-clean {
+footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     margin-top: 30px;
-    padding: 18px 0;
+    padding: 28px 0;
     text-align: center;
     color: rgba(255,255,255,0.85);
-    background: rgba(0,0,0,0.15);
-    border-top: 1px solid rgba(255,255,255,0.08);
+    background: rgba(7, 28, 39, 0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-
+    footer .container a {   
+        color: white;
+        text-decoration:none;
+    }
 @media (max-width: 768px) {
     .sf-navbar {
         flex-direction: column;
@@ -125,4 +135,17 @@ body {
     .sf-brand {
         font-size: 24px;
     }
+}
+.sf-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* espacio entre logo y texto */
+    text-decoration: none;
+    text-shadow: 0 0 6px rgba(108, 99, 255, 0.7), 0 0 12px rgba(108, 99, 255, 0.4);
+}
+
+.sf-logo {
+    height: 52px;
+    width: auto;
+    filter: drop-shadow(0 0 4px rgba(108, 99, 255, 0.6)) drop-shadow(0 0 10px rgba(108, 99, 255, 0.3));
 }

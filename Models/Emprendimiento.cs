@@ -17,4 +17,5 @@ public class Emprendimiento
     public bool EsPropio { get; set; } = true;
 
     public List<TareaKanban> TareasKanban { get; set; } = new();
+    public List<Disponibilidad> Disponibilidades { get; set; } = new();
 }

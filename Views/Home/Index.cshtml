@@ -1,104 +1,92 @@
-﻿@model IEnumerable<Emprendimiento>
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+<link rel="stylesheet" href="~/css/Index.css" asp-append-version="true" />
+<div class="container-fluid p-0">
+    <div id="carouselExample" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
+    <div class="carousel-inner">
 
-<link rel="stylesheet" href="~/css/IndexGeneral.css" asp-append-version="true" />
+        <div class="carousel-item active">
+            <img src="~/images/carrusel/img1.jpg" class="d-block w-100">
+                <div class="carousel-overlay"></div> <!-- 🔥 overlay -->
 
-<section class="hero">
-    <div class="hero-header">
-        <div class="hero-text">
-            
-            <h1>Portafolio de Servicios</h1>
-            <p class="hero-subtitle">Elige un emprendimiento, agenda una cita o gestiona tu información desde el menú rápido.</p>
+            <div class="carousel-caption">
+                <h2>Gestiona tus citas fácilmente</h2>
+                <a class="btn btn-primary" asp-controller="Usuarios" asp-action="Login">Iniciar sesión</a>
+                <a class="btn btn-success" asp-controller="Usuarios" asp-action="Registro">Registrarse</a>
+            </div>
         </div>
 
-        <nav class="crud-submenu">
-            
+        <div class="carousel-item">
+            <img src="~/images/carrusel/img2.jpg" class="d-block w-100">
+                <div class="carousel-overlay"></div> <!-- 🔥 overlay -->
+            <div class="carousel-caption">
+                <h2>Organiza tu negocio de belleza</h2>
+            </div>
+        </div>
 
-            <a class="crud-link" asp-controller="Emprendimientos" asp-action="Create">
-                Crear nuevo
-            </a>
+       <div class="carousel-item">
+           <img src="~/images/carrusel/img3.jpg" class="d-block w-100">
+                <div class="carousel-overlay"></div> <!-- 🔥 overlay -->
+           <div class="carousel-caption">
+               <h2>Conecta con más clientes</h2>
+           </div>
+       </div>
 
-            <span class="submenu-separator"></span>
-
-            <a class="crud-link" asp-controller="Emprendimientos" asp-action="MisServicios">
-                Administrar servicios
-            </a>
-        </nav>
     </div>
-</section>
 
-<section class="grid-servicios">
-@foreach (var e in Model)
-{
-    <article class="card-servicio">
-        <img class="card-img" src="@e.ImagenUrl" alt="@e.Nombre" />
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
 
-        <div class="card-overlay"></div>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+</div>
 
-        <div class="card-content">
-            <h3 class="card-title">@e.Nombre</h3>
-            <span class="card-sub">@e.TipoServicio</span>
-            <p class="card-desc">@e.Descripcion</p>
+<div class="container mt-5 text-center info-section fondo-tarjetas">
+    <h2>¿Qué es ServiFlow?</h2>
+    <p>Plataforma para gestionar citas de servicios de belleza de forma fácil y rápida.</p>
+</div>
 
-                <div class="card-buttons">
-                    <a class="btn-card btn-reservar"
-                       asp-controller="Citas"
-                       asp-action="Create"
-                       asp-route-emprendimientoId="@e.Id">
-                        Reservar
-                    </a>
-
-                    <a class="btn-card btn-editar"
-                       asp-controller="Emprendimientos"
-                       asp-action="Edit"
-                       asp-route-id="@e.Id">
-                        Editar
-                    </a>
-
-                    <a class="btn-card btn-eliminar"
-                       asp-controller="Emprendimientos"
-                       asp-action="Delete"
-                       asp-route-id="@e.Id">
-                        Eliminar
-                    </a>
-                </div>
+<div class="container mt-5">
+    <div class="row justify-content-center g-4 cards-section">
+        <div class="col-md-6 d-flex justify-content-center">
+            <div class="info-card card-left">
+                <h3>Cliente</h3>
+                <p>Reserva citas, consulta disponibilidad y organiza tus servicios.</p>
+            </div>
         </div>
-    </article>
-}
-</section>
 
-@{
-    int currentPage = ViewBag.CurrentPage ?? 1;
-    int totalPages = ViewBag.TotalPages ?? 1;
-}
+        <div class="col-md-6 d-flex justify-content-center">
+            <div class="info-card card-right">
+                <h3>Emprendedor</h3>
+                <p>Administra tu agenda, clientes y servicios en un solo lugar.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container mt-5 text-center fondo-tarjetas">
+    <h2>Empieza ahora</h2>
+    <a class="btn btn-primary m-2" asp-controller="Usuarios" asp-action="Login">Iniciar sesión</a>
+    <a class="btn btn-success m-2" asp-controller="Usuarios" asp-action="Registro">Crear cuenta</a>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const cards = document.querySelectorAll(".info-card");
 
-@if (totalPages > 1)
-{
-    <nav class="pagination-wrap">
-        @if (currentPage > 1)
-        {
-            <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)">Anterior</a>
-        }
-        else
-        {
-            <span class="page-disabled">Anterior</span>
-        }
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("show");
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.25
+        });
 
-        @for (int i = 1; i <= totalPages; i++)
-        {
-            <a class="page-number @(i == currentPage ? "active" : "")"
-               asp-action="Index"
-               asp-route-page="@i">
-                @i
-            </a>
-        }
-
-        @if (currentPage < totalPages)
-        {
-            <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)">Siguiente</a>
-        }
-        else
-        {
-            <span class="page-disabled">Siguiente</span>
-        }
-    </nav>
-}
+        cards.forEach(card => observer.observe(card));
+    });
+</script>

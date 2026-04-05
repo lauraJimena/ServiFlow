@@ -13,7 +13,7 @@ public class HomeController : Controller
 
     public IActionResult Index(int page = 1)
     {
-        int pageSize = 6;
+        int pageSize = 10;
 
         var query = _context.Emprendimientos
             .Where(e => e.EsPropio);

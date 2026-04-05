@@ -1,27 +1,58 @@
 ﻿@model ServiFlow.Models.Emprendimiento
 <link rel="stylesheet" href="~/css/Create.css" asp-append-version="true" />
+
+<div class="registro-container">
+
+    <!-- FORMULARIO -->
+    <div class="registro-form">
 <h2>Crear Emprendimiento</h2>
 
 <form asp-action="Create" method="post" enctype="multipart/form-data">
-    <div>
-        <label>Nombre</label>
-        <input asp-for="Nombre" />
+    <div>      
+        <input asp-for="Nombre" class="input-custom" placeholder="Nombre" />
     </div>
 
     <div>
-        <label>Tipo Servicio</label>
-        <input asp-for="TipoServicio" />
+        
+        <input asp-for="TipoServicio" class="input-custom" placeholder="Tipo Servicio" />
     </div>
 
     <div>
-        <label>Descripción</label>
-        <input asp-for="Descripcion" />
+       
+        <input asp-for="Descripcion" class="input-custom" placeholder="Descripción" />
     </div>
-    <div>
-    <label>Imagen</label>
-        <input type="file" name="ImagenArchivo" />
+    <div class="contenedor-file">
+        <label class="file-upload">
+            <input type="file" accept="image/*" name="ImagenArchivo" onchange="previewImagen(event)">
+            <span id="textoFile">Agrega una imagen para tu emprendimiento</span>
+        </label>
+
+        <img id="preview" class="preview-img" />
     </div>
 
     <button type="submit">Guardar</button>
     
 </form>
+    </div>
+
+    <!-- IMAGEN -->
+    <div class="registro-img">
+        <img src="~/images/crear.png" alt="Registro ServiFlow" class="img-crear">
+    </div>
+
+</div>
+
+<script>
+function previewImagen(event) {
+  const file = event.target.files[0];
+  const preview = document.getElementById("preview");
+  const texto = document.getElementById("textoFile");
+
+  if (file) {
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+
+    texto.textContent = file.name;
+  }
+}
+</script>

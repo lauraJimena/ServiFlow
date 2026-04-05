@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -6,33 +7,53 @@
     <title>@ViewData["Title"] - ServiFlow</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    @RenderSection("Styles", required: false)
-    <link rel="stylesheet" href="~/ServiFlow.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/kanban.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/IndexGeneral.css" asp-append-version="true" />
+    @RenderSection("Styles", required: false)
+   
+    
 </head>
 <body class="layout-shell">
     <header class="sf-header">
         <div class="sf-navbar">
-            <a class="sf-brand" asp-controller="Home" asp-action="Index">ServiFlow</a>
+            <a class="sf-brand" asp-controller="Home" asp-action="Index">
+                <img src="~/images/logo_serviflow.png" alt="Logo ServiFlow" class="sf-logo" />
+                ServiFlow
+            </a>
 
             <nav class="sf-menu">
-                <a class="sf-link" asp-controller="Home" asp-action="Index">Servicios</a>
-
-                
-                 <a class="sf-link" asp-controller="Citas" asp-action="Index">Reservas</a> 
-
-                
-                
+                <a class="sf-link" asp-controller="Home" asp-action="Index">Servicios</a>               
+                <a class="sf-link" asp-controller="Citas" asp-action="Index">Reservas</a> 
+                         
             </nav>
         </div>
     </header>
+    @{
+        var esHome = ViewContext.RouteData.Values["Controller"]?.ToString() == "Home"
+        && ViewContext.RouteData.Values["Action"]?.ToString() == "Index";
+    }
+
+    @if (esHome)
+    {
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    }
+    else
+    {
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    }
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer>
         <div class="container">
             &copy; 2026 - ServiFlow - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>

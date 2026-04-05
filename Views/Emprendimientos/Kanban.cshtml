@@ -1,6 +1,7 @@
 ﻿@model List<ServiFlow.Models.TareaKanban>
 @using ServiFlow.Models
-
+<link rel="stylesheet" href="~/css/kanban.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=close" />
 @{
     ViewData["Title"] = "Kanban";
 
@@ -12,49 +13,54 @@
     var nombreEmprendimiento = ViewBag.NombreEmprendimiento as string;
 }
 
-<h1>🚀 Tablero Kanban - @nombreEmprendimiento</h1>
-
-<div style="margin-bottom: 20px;">
-    <a asp-controller="Emprendimientos"
-       asp-action="MisServicios">
-        ← Volver a Mis Servicios
-    </a>
+<div class="header">
+    <img src="~/images/organizar.png" alt="icono" class="icono">
+    <h1>Tablero Kanban - @nombreEmprendimiento</h1>
+   
 </div>
 
-<hr />
+<div class="caja-agregar">
+    <div class="form-lado">
+        <h2 class="subtit">Agregar tarea</h2>
 
-<div>
-    <h2>Agregar tarea</h2>
+        <form asp-action="Crear" method="post">
+            @Html.AntiForgeryToken()
 
-    <form asp-action="Crear" method="post">
-        @Html.AntiForgeryToken()
+            <input type="hidden" name="emprendimientoId" value="@emprendimientoId" />
 
-        <input type="hidden" name="emprendimientoId" value="@emprendimientoId" />
+            <div class="campo-form">
+                <label>Título</label><br />
+                <input type="text" name="titulo" required placeholder="Escribe aquí el título de tu tarea"/>
+            </div>
 
-        <div>
-            <label>Título</label>
-            <input type="text" name="titulo" required />
-        </div>
+            <div class="campo-form">
+                <label>Descripción</label><br />
+                <textarea name="descripcion" placeholder="Agrega una descripción de tu tarea"></textarea>
+            </div>
 
-        <br />
 
-        <div>
-            <label>Descripción</label>
-            <textarea name="descripcion"></textarea>
-        </div>
+            <button type="submit">Agregar</button>
 
-        <br />
+            <div>
+                <a asp-controller="Emprendimientos" class="botonVolver"
+                   asp-action="MisServicios">
+                    ← Volver a Mis Servicios
+                </a>
+            </div>
+        </form>
+    </div>
 
-        <button type="submit">Agregar</button>
-    </form>
+    <!-- 🔥 IMAGEN AQUI -->
+    <div class="imagen-lado">
+        <img src="~/images/tablero.png" alt="Tareas" />
+    </div>
 </div>
 
-<hr />
 
 <div class="tablero-kanban">
 
-    <div class="columna-kanban" ondragover="permitirDrop(event)" ondrop="soltarTarea(event, 0)">
-        <h2>🟨 Por hacer</h2>
+    <div class="columna-kanban" id="col-0" ondragover="permitirDrop(event)" ondrop="soltarTarea(event, 0)">
+        <h2>Por hacer</h2>
 
         @if (porHacer.Any())
         {
@@ -75,12 +81,13 @@
         }
         else
         {
-            <p>No hay tareas en esta columna.</p>
+            <p class="mensaje-vacio">No hay tareas en esta columna.</p>
         }
     </div>
 
-    <div class="columna-kanban" ondragover="permitirDrop(event)" ondrop="soltarTarea(event, 1)">
-        <h2>🟧 En proceso</h2>
+    <div class="columna-kanban" id="col-1" ondragover="permitirDrop(event)" ondrop="soltarTarea(event, 1)">
+
+        <h2>En proceso</h2>
 
         @if (enProceso.Any())
         {
@@ -101,12 +108,12 @@
         }
         else
         {
-            <p>No hay tareas en esta columna.</p>
+                <p class="mensaje-vacio">No hay tareas en esta columna.</p>
         }
     </div>
 
-    <div class="columna-kanban" ondragover="permitirDrop(event)" ondrop="soltarTarea(event, 2)">
-        <h2>🟩 Terminado</h2>
+    <div class="columna-kanban" id="col-2" ondragover="permitirDrop(event)" ondrop="soltarTarea(event, 2)">
+        <h2>Terminado</h2>
 
         @if (terminado.Any())
         {
@@ -127,7 +134,7 @@
         }
         else
         {
-            <p>No hay tareas en esta columna.</p>
+                <p class="mensaje-vacio">No hay tareas en esta columna.</p>
         }
     </div>
 
@@ -151,7 +158,7 @@
                 <input type="hidden" name="tareaId" id="phId" />
                 <input type="hidden" name="nuevoEstado" value="0" />
                 <input type="hidden" name="emprendimientoId" value="@emprendimientoId" />
-                <button type="submit">🟨 Mover a Por hacer</button>
+                <button class="btn-popup" type="submit">Mover a Por hacer</button>
             </form>
 
             <form method="post" asp-action="Mover">
@@ -159,7 +166,7 @@
                 <input type="hidden" name="tareaId" id="epId" />
                 <input type="hidden" name="nuevoEstado" value="1" />
                 <input type="hidden" name="emprendimientoId" value="@emprendimientoId" />
-                <button type="submit">🟧 Mover a En proceso</button>
+                <button class="btn-popup" type="submit">Mover a En proceso</button>
             </form>
 
             <form method="post" asp-action="Mover">
@@ -167,19 +174,24 @@
                 <input type="hidden" name="tareaId" id="tId" />
                 <input type="hidden" name="nuevoEstado" value="2" />
                 <input type="hidden" name="emprendimientoId" value="@emprendimientoId" />
-                <button type="submit">🟩 Mover a Terminado</button>
+                <button class="btn-popup" type="submit">Mover a Terminado</button>
             </form>
 
             <form method="post" asp-action="Eliminar">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="tareaId" id="deleteId" />
                 <input type="hidden" name="emprendimientoId" value="@emprendimientoId" />
-                <button type="submit">🗑 Eliminar tarea</button>
+                <button class="btn-popup" type="submit">Eliminar tarea</button>
             </form>
         </div>
 
         <br />
 
-        <button type="button" onclick="cerrarPopup()">❌ Cerrar</button>
+        <button class="cerrar" type="button" onclick="cerrarPopup()">
+            <span class="material-symbols-outlined">
+                close
+            </span>
+            Cerrar
+        </button>
     </div>
 </div>

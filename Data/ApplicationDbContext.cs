@@ -12,8 +12,10 @@ namespace ServiFlow.Data
         }
 
         public DbSet<Emprendimiento> Emprendimientos { get; set; }
+        public DbSet<Disponibilidad> Disponibilidades { get; set; }
         public DbSet<Cita> Citas { get; set; }
         public DbSet<Tarea> Tareas { get; set; }
         public DbSet<TareaKanban> TareasKanban { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }
