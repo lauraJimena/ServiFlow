@@ -67,29 +67,32 @@ namespace ServiFlow.Controllers
 
             if (ImagenArchivo != null && ImagenArchivo.Length > 0)
             {
-                string carpetaImagenes = Path.Combine(_environment.WebRootPath, "images");
+                string carpeta = Path.Combine(_environment.WebRootPath, "images");
 
-                if (!Directory.Exists(carpetaImagenes))
-                    Directory.CreateDirectory(carpetaImagenes);
+                if (!Directory.Exists(carpeta))
+                    Directory.CreateDirectory(carpeta);
 
                 string nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(ImagenArchivo.FileName);
-                string rutaCompleta = Path.Combine(carpetaImagenes, nombreArchivo);
+                string ruta = Path.Combine(carpeta, nombreArchivo);
 
-                using (var stream = new FileStream(rutaCompleta, FileMode.Create))
+                using (var stream = new FileStream(ruta, FileMode.Create))
                 {
                     ImagenArchivo.CopyTo(stream);
                 }
 
                 emprendimiento.ImagenUrl = "/images/" + nombreArchivo;
             }
+            else
+            {
+                // Imagen por defecto (IMPORTANTE)
+                emprendimiento.ImagenUrl = "/images/default.png";
+            }
 
             _context.Emprendimientos.Add(emprendimiento);
             _context.SaveChanges();
 
-            TempData["Mensaje"] = "Emprendimiento creado con éxito";
             return RedirectToAction("MisServicios");
         }
-
         // FORMULARIO EDITAR
         public IActionResult Edit(int id)
         {

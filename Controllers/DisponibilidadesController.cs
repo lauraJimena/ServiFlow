@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using ServiFlow.Data;
 using ServiFlow.Models;
 using ServiFlow.ViewModels;
@@ -15,82 +15,198 @@ namespace ServiFlow.Controllers
             _context = context;
         }
 
-        public IActionResult Index(int? emprendimientoId)
+        [HttpGet]
+        public IActionResult Index(int emprendimientoId, int page = 1, string tab = "configurar")
         {
-            var vm = new DisponibilidadVM();
+            var emprendimiento = _context.Emprendimientos
+                .FirstOrDefault(e => e.Id == emprendimientoId);
 
-            vm.Emprendimientos = _context.Emprendimientos
-                .Select(e => new SelectListItem
-                {
-                    Value = e.Id.ToString(),
-                    Text = e.Nombre
-                })
-                .ToList();
+            if (emprendimiento == null)
+                return NotFound();
 
-            vm.EmprendimientoIdSeleccionado = emprendimientoId;
+            AsegurarServiciosBase(emprendimientoId);
 
-            if (emprendimientoId.HasValue)
-            {
-                vm.NuevaDisponibilidad.EmprendimientoId = emprendimientoId.Value;
-
-                vm.HorariosExistentes = _context.Disponibilidades
-                    .Where(d => d.EmprendimientoId == emprendimientoId.Value)
-                    .ToList()
-                    .OrderBy(d => d.Dia)
-                    .ThenBy(d => d.HoraInicio)
-                    .ToList();
-            }
+            var vm = ConstruirViewModel(emprendimientoId, page, tab);
+            ViewBag.NombreEmprendimiento = emprendimiento.Nombre;
 
             return View(vm);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Crear(DisponibilidadVM vm)
         {
-            vm.Emprendimientos = _context.Emprendimientos
-                .Select(e => new SelectListItem
-                {
-                    Value = e.Id.ToString(),
-                    Text = e.Nombre
-                })
+            var emprendimiento = _context.Emprendimientos
+                .FirstOrDefault(e => e.Id == vm.EmprendimientoId);
+
+            if (emprendimiento == null)
+                return NotFound();
+
+            AsegurarServiciosBase(vm.EmprendimientoId);
+
+            ViewBag.NombreEmprendimiento = emprendimiento.Nombre;
+
+            vm.TabActiva = "configurar";
+            vm.Servicios = _context.Servicios
+                .Where(s => s.EmprendimientoId == vm.EmprendimientoId && s.Activo)
+                .OrderBy(s => s.Nombre)
                 .ToList();
+
+            var horariosQuery = _context.Disponibilidades
+                .Include(d => d.Servicio)
+                .Where(d => d.EmprendimientoId == vm.EmprendimientoId);
+
+            vm.TotalItems = horariosQuery.Count();
+            vm.TotalPages = (int)Math.Ceiling((double)vm.TotalItems / vm.PageSize);
+            if (vm.TotalPages == 0) vm.TotalPages = 1;
+
+            vm.HorariosExistentes = horariosQuery
+                .ToList()
+                .OrderBy(d => d.Dia)
+                .ThenBy(d => d.HoraInicio)
+                .Take(vm.PageSize)
+                .ToList();
+
+            if (vm.ServicioIdSeleccionado <= 0)
+            {
+                ModelState.AddModelError("", "Debes seleccionar un servicio.");
+            }
+
+            if (vm.DiaSeleccionado == null)
+            {
+                ModelState.AddModelError("", "Debes seleccionar un día.");
+            }
+
+            bool servicioValido = vm.Servicios.Any(s => s.Id == vm.ServicioIdSeleccionado);
+            if (!servicioValido)
+            {
+                ModelState.AddModelError("", "El servicio seleccionado no es válido para este emprendimiento.");
+            }
+
+            if (vm.HoraFin <= vm.HoraInicio)
+            {
+                ModelState.AddModelError("", "La hora final debe ser mayor a la inicial.");
+            }
+
+            if (vm.DiaSeleccionado != null)
+            {
+                var disponibilidadesExistentes = _context.Disponibilidades
+                    .Where(d => d.EmprendimientoId == vm.EmprendimientoId
+                             && d.ServicioId == vm.ServicioIdSeleccionado
+                             && d.Dia == vm.DiaSeleccionado.Value)
+                    .ToList();
+
+                bool cruzaHorario = disponibilidadesExistentes.Any(d =>
+                    vm.HoraInicio < d.HoraFin && vm.HoraFin > d.HoraInicio);
+
+                if (cruzaHorario)
+                {
+                    ModelState.AddModelError("", "Ya existe una disponibilidad que se cruza con ese rango.");
+                }
+            }
 
             if (!ModelState.IsValid)
             {
-                vm.HorariosExistentes = _context.Disponibilidades
-                    .Where(d => d.EmprendimientoId == vm.NuevaDisponibilidad.EmprendimientoId)
-                    .ToList()
-                    .OrderBy(d => d.Dia)
-                    .ThenBy(d => d.HoraInicio)
-                    .ToList();
-                if (vm.NuevaDisponibilidad.HoraFin <= vm.NuevaDisponibilidad.HoraInicio)
-                {
-                    ModelState.AddModelError("", "La hora final debe ser mayor que la hora inicial.");
-                }
-
-                vm.EmprendimientoIdSeleccionado = vm.NuevaDisponibilidad.EmprendimientoId;
                 return View("Index", vm);
             }
 
-            _context.Disponibilidades.Add(vm.NuevaDisponibilidad);
+            var disponibilidad = new Disponibilidad
+            {
+                EmprendimientoId = vm.EmprendimientoId,
+                ServicioId = vm.ServicioIdSeleccionado,
+                Dia = vm.DiaSeleccionado!.Value,
+                HoraInicio = vm.HoraInicio,
+                HoraFin = vm.HoraFin
+            };
+
+            _context.Disponibilidades.Add(disponibilidad);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", new { emprendimientoId = vm.NuevaDisponibilidad.EmprendimientoId });
+            TempData["Success"] = "Disponibilidad creada correctamente.";
+            return RedirectToAction("Index", new { emprendimientoId = vm.EmprendimientoId, tab = "horarios" });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Eliminar(int id)
         {
-            var disponibilidad = _context.Disponibilidades.Find(id);
+            var disponibilidad = _context.Disponibilidades
+                .FirstOrDefault(d => d.Id == id);
 
             if (disponibilidad == null)
-                return RedirectToAction("Index");
+                return RedirectToAction("MisServicios", "Emprendimientos");
 
-            int empId = disponibilidad.EmprendimientoId;
+            int emprendimientoId = disponibilidad.EmprendimientoId;
 
             _context.Disponibilidades.Remove(disponibilidad);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", new { emprendimientoId = empId });
+            TempData["Success"] = "Disponibilidad eliminada correctamente.";
+            return RedirectToAction("Index", new { emprendimientoId, tab = "horarios" });
+        }
+
+        private DisponibilidadVM ConstruirViewModel(int emprendimientoId, int page, string tab)
+        {
+            const int pageSize = 4;
+
+            var servicios = _context.Servicios
+                .Where(s => s.EmprendimientoId == emprendimientoId && s.Activo)
+                .OrderBy(s => s.Nombre)
+                .ToList();
+
+            var horariosQuery = _context.Disponibilidades
+                .Include(d => d.Servicio)
+                .Where(d => d.EmprendimientoId == emprendimientoId);
+
+            var horariosOrdenados = horariosQuery
+                .ToList()
+                .OrderBy(d => d.Dia)
+                .ThenBy(d => d.HoraInicio)
+                .ToList();
+
+            int totalItems = horariosOrdenados.Count;
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            if (totalPages == 0) totalPages = 1;
+
+            if (page < 1) page = 1;
+            if (page > totalPages) page = totalPages;
+
+            var horariosPagina = horariosOrdenados
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new DisponibilidadVM
+            {
+                EmprendimientoId = emprendimientoId,
+                Servicios = servicios,
+                HorariosExistentes = horariosPagina,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                TotalItems = totalItems,
+                PageSize = pageSize,
+                TabActiva = string.IsNullOrWhiteSpace(tab) ? "configurar" : tab
+            };
+        }
+
+        private void AsegurarServiciosBase(int emprendimientoId)
+        {
+            bool yaTieneServicios = _context.Servicios.Any(s => s.EmprendimientoId == emprendimientoId);
+
+            if (yaTieneServicios)
+                return;
+
+            var serviciosBase = new List<Servicio>
+            {
+                new Servicio { Nombre = "Uñas", EmprendimientoId = emprendimientoId, Activo = true },
+                new Servicio { Nombre = "Barbería", EmprendimientoId = emprendimientoId, Activo = true },
+                new Servicio { Nombre = "Maquillaje", EmprendimientoId = emprendimientoId, Activo = true },
+                new Servicio { Nombre = "Peinados", EmprendimientoId = emprendimientoId, Activo = true },
+                new Servicio { Nombre = "Depilación", EmprendimientoId = emprendimientoId, Activo = true }
+            };
+
+            _context.Servicios.AddRange(serviciosBase);
+            _context.SaveChanges();
         }
     }
 }

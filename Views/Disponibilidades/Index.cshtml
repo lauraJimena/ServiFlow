@@ -1,134 +1,356 @@
 ﻿@model ServiFlow.ViewModels.DisponibilidadVM
-<link rel="stylesheet" href="~/css/Disponib.css" asp-append-version="true" />
+
 @{
-    ViewData["Title"] = "Horarios disponibles";
+    Layout = "_LayoutCliente";
+    ViewData["Title"] = "Disponibilidad";
+    var nombreEmprendimiento = ViewBag.NombreEmprendimiento as string ?? "Emprendimiento";
+
+    var erroresModelState = ViewData.ModelState.Values
+        .SelectMany(v => v.Errors)
+        .Select(e => e.ErrorMessage)
+        .Where(m => !string.IsNullOrWhiteSpace(m))
+        .ToList();
 }
 
-<h2 class="mb-4">Configurar horarios del emprendimiento</h2>
-<div class="caja-dispon">
-    <form method="get" asp-action="Index" class="mb-4">
-        <div class="row align-items-center">
-            <div class="col-md-6 d-flex align-items-center">
-                <div style="flex:1;">
-                <label class="form-label">Selecciona tu emprendimiento</label>
-                <select name="emprendimientoId" class="form-select" onchange="this.form.submit()">
-                    <option value="">-- Selecciona --</option>
-                    @foreach (var item in Model.Emprendimientos)
-                    {
-                        if (Model.EmprendimientoIdSeleccionado.HasValue && item.Value == Model.EmprendimientoIdSeleccionado.Value.ToString())
-                        {
-                            <option value="@item.Value" selected>@item.Text</option>
-                        }
-                        else
-                        {
-                            <option value="@item.Value">@item.Text</option>
-                        }
-                    }
-                </select>
-                </div>
-                <img src="/images/horario.png" class="img-emprendimiento">
+<link rel="stylesheet" href="~/css/Disponibilidades.css" asp-append-version="true" />
+
+<div class="disp-card">
+    <div class="tabs-wrapper">
+        <div class="tabs-bar">
+            <a class="tab-segment @(Model.TabActiva == "configurar" ? "active" : "")"
+               asp-action="Index"
+               asp-route-emprendimientoId="@Model.EmprendimientoId"
+               asp-route-tab="configurar">
+                Configurar disponibilidad
+            </a>
+
+            <a class="tab-segment @(Model.TabActiva == "horarios" ? "active" : "")"
+               asp-action="Index"
+               asp-route-emprendimientoId="@Model.EmprendimientoId"
+               asp-route-tab="horarios">
+                Horarios existentes
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div id="popupMensaje" class="popup-overlay">
+            <div class="popup-box">
+                <h3>Confirmación</h3>
+                <p>@TempData["Success"]</p>
+                <button type="button" id="btnCerrarPopup" class="btn-popup">OK</button>
             </div>
         </div>
-    </form>
-</div>
-@if (Model.EmprendimientoIdSeleccionado.HasValue)
-{
-    <div class="card mb-4">
-        <div class="card-header">
-            <strong>Agregar horario</strong>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div id="popupError" class="popup-overlay">
+            <div class="popup-box popup-error">
+                <h3>Atención</h3>
+                <p>@TempData["Error"]</p>
+                <button type="button" id="btnCerrarPopupError" class="btn-popup">OK</button>
+            </div>
         </div>
-        <div class="card-body">
-            <form asp-action="Crear" method="post">
-                <input asp-for="NuevaDisponibilidad.EmprendimientoId" type="hidden" />
+    }
 
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label asp-for="NuevaDisponibilidad.Dia" class="form-label">Día</label>
-                        <select asp-for="NuevaDisponibilidad.Dia" class="form-select">
-                            <option value="1">Lunes</option>
-                            <option value="2">Martes</option>
-                            <option value="3">Miércoles</option>
-                            <option value="4">Jueves</option>
-                            <option value="5">Viernes</option>
-                            <option value="6">Sábado</option>
-                            <option value="0">Domingo</option>
-                        </select>
+    @if (erroresModelState.Any())
+    {
+        <div id="popupValidacion" class="popup-overlay">
+            <div class="popup-box popup-error">
+                <h3>Revisa la información</h3>
+
+                <div class="popup-errors-list">
+                    @foreach (var error in erroresModelState)
+                    {
+                        <p>• @error</p>
+                    }
+                </div>
+
+                <button type="button" id="btnCerrarPopupValidacion" class="btn-popup">OK</button>
+            </div>
+        </div>
+    }
+
+    @if (Model.TabActiva == "configurar")
+    {
+        <div class="disp-header">
+            <h2>Configurar disponibilidad</h2>
+            <p class="disp-subtitle">@nombreEmprendimiento</p>
+        </div>
+
+        <form asp-action="Crear" method="post" class="disp-form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="EmprendimientoId" />
+            <input type="hidden" asp-for="DiaSeleccionado" id="DiaSeleccionado" />
+
+            <div class="bloque">
+                <div class="bloque-titulo">
+                    <span>📅Indícanos el día</span>
+                </div>
+
+                <div class="calendario-header">
+                    <button type="button" id="btnMesAnterior" class="nav-mes">❮</button>
+                    <span id="mesActual" class="mes-actual"></span>
+                    <button type="button" id="btnMesSiguiente" class="nav-mes">❯</button>
+                </div>
+
+                <div id="diasContainer" class="dias-container" translate="no"></div>
+            </div>
+
+            <div class="bloque">
+                <div class="bloque-titulo">
+                    <span>🧰Servicios disponibles</span>
+                </div>
+
+                <div class="servicios-grid" translate="no">
+                    @foreach (var servicio in Model.Servicios)
+                    {
+                        <label class="servicio-chip">
+                            <input type="radio"
+                                   asp-for="ServicioIdSeleccionado"
+                                   value="@servicio.Id" />
+                            <span>@servicio.Nombre</span>
+                        </label>
+                    }
+                </div>
+            </div>
+
+            <div class="bloque">
+                <div class="bloque-titulo">
+                    <span>🕒Define el rango de horas</span>
+                </div>
+
+                <div class="horas-row">
+                    <div class="form-group">
+                        <label asp-for="HoraInicio">Hora inicio</label>
+                        <input asp-for="HoraInicio" type="time" class="input-time" />
                     </div>
 
-                    <div class="col-md-4">
-                        <label asp-for="NuevaDisponibilidad.HoraInicio" class="form-label">Hora inicio</label>
-                        <input asp-for="NuevaDisponibilidad.HoraInicio" type="time" class="form-control" />
-                    </div>
-
-                    <div class="col-md-4">
-                        <label asp-for="NuevaDisponibilidad.HoraFin" class="form-label">Hora fin</label>
-                        <input asp-for="NuevaDisponibilidad.HoraFin" type="time" class="form-control" />
+                    <div class="form-group">
+                        <label asp-for="HoraFin">Hora fin</label>
+                        <input asp-for="HoraFin" type="time" class="input-time" />
                     </div>
                 </div>
-                <input asp-for="NuevaDisponibilidad.EmprendimientoId" type="hidden" value="@Model.EmprendimientoIdSeleccionado" />
-                <button type="submit" class="btn btn-primary">Guardar horario</button>
-            </form>
-        </div>
-    </div>
+            </div>
 
-    <div class="card">
-        <div class="card-header">
-            <strong>Horarios registrados</strong>
+            <button type="submit" class="btn-guardar">
+                Guardar disponibilidad
+            </button>
+        </form>
+    }
+    else
+    {
+        <div class="disp-header">
+            <h2>Horarios existentes</h2>
+            <p class="disp-subtitle">@nombreEmprendimiento</p>
         </div>
-        <div class="card-body">
-            @if (Model.HorariosExistentes.Any())
+
+        @if (Model.HorariosExistentes != null && Model.HorariosExistentes.Any())
+        {
+            <div class="horarios-list">
+                @foreach (var item in Model.HorariosExistentes)
+                {
+                    <div class="horario-item">
+                        <div class="horario-info">
+                            <div class="horario-servicio">@item.Servicio?.Nombre</div>
+                            <div class="horario-detalle">
+                                @TraducirDia(item.Dia) · @item.HoraInicio.ToString(@"hh\:mm") - @item.HoraFin.ToString(@"hh\:mm")
+                            </div>
+                        </div>
+
+                        <form asp-action="Eliminar" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn-eliminar">Eliminar</button>
+                        </form>
+                    </div>
+                }
+            </div>
+
+            @if (Model.TotalPages > 1)
             {
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Día</th>
-                            <th>Hora inicio</th>
-                            <th>Hora fin</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var h in Model.HorariosExistentes)
-                        {
-                            <tr>
-                                <td>
-                                    @{
-                                        var diaTexto = h.Dia switch
-                                        {
-                                            DayOfWeek.Monday => "Lunes",
-                                            DayOfWeek.Tuesday => "Martes",
-                                            DayOfWeek.Wednesday => "Miércoles",
-                                            DayOfWeek.Thursday => "Jueves",
-                                            DayOfWeek.Friday => "Viernes",
-                                            DayOfWeek.Saturday => "Sábado",
-                                            DayOfWeek.Sunday => "Domingo",
-                                            _ => h.Dia.ToString()
-                                        };
-                                    }
-                                    @diaTexto
-                                </td>
-                                <td>@h.HoraInicio.ToString(@"hh\:mm")</td>
-                                <td>@h.HoraFin.ToString(@"hh\:mm")</td>
-                                <td>
-                                    <a asp-action="Eliminar" asp-route-id="@h.Id" class="btn btn-sm btn-danger">
-                                        Eliminar
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                <nav class="pagination-wrap">
+                    @if (Model.CurrentPage > 1)
+                    {
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-emprendimientoId="@Model.EmprendimientoId"
+                           asp-route-tab="horarios"
+                           asp-route-page="@(Model.CurrentPage - 1)">
+                            Anterior
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="page-disabled">Anterior</span>
+                    }
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <a class="page-number @(i == Model.CurrentPage ? "active" : "")"
+                           asp-action="Index"
+                           asp-route-emprendimientoId="@Model.EmprendimientoId"
+                           asp-route-tab="horarios"
+                           asp-route-page="@i">
+                            @i
+                        </a>
+                    }
+
+                    @if (Model.CurrentPage < Model.TotalPages)
+                    {
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-emprendimientoId="@Model.EmprendimientoId"
+                           asp-route-tab="horarios"
+                           asp-route-page="@(Model.CurrentPage + 1)">
+                            Siguiente
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="page-disabled">Siguiente</span>
+                    }
+                </nav>
             }
-            else
-            {
-                <p>No hay horarios registrados para este emprendimiento.</p>
-            }
-        </div>
-    </div>
-}
-else
+        }
+        else
+        {
+            <div class="empty-message">
+                Aún no has configurado disponibilidades para este emprendimiento.
+            </div>
+        }
+    }
+</div>
+
+@if (Model.TabActiva == "configurar")
 {
-    <div class="alert alert-info">
-        Selecciona un emprendimiento para configurar su disponibilidad y que los clientes puedan agendar citas contigo.
-    </div>
+    <script>
+        let fechaBase = new Date();
+        let fechaSeleccionada = null;
+
+        const diasContainer = document.getElementById("diasContainer");
+        const mesActual = document.getElementById("mesActual");
+        const inputDiaSeleccionado = document.getElementById("DiaSeleccionado");
+
+        const nombresMeses = [
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
+
+        const nombresDias = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+
+        function formatearFechaISO(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function renderDias() {
+            diasContainer.innerHTML = "";
+
+            const anio = fechaBase.getFullYear();
+            const mes = fechaBase.getMonth();
+
+            mesActual.textContent = nombresMeses[mes];
+
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+
+            const ultimoDia = new Date(anio, mes + 1, 0).getDate();
+
+            for (let dia = 1; dia <= ultimoDia; dia++) {
+                const fecha = new Date(anio, mes, dia);
+                fecha.setHours(0, 0, 0, 0);
+
+                if (fecha < hoy) continue;
+
+                const iso = formatearFechaISO(fecha);
+
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "dia-btn";
+                btn.dataset.fecha = iso;
+                btn.dataset.dayofweek = fecha.getDay();
+                btn.setAttribute("translate", "no");
+
+                if (fechaSeleccionada === iso) {
+                    btn.classList.add("selected");
+                }
+
+                btn.innerHTML = `
+                    <span class="dia-nombre">${nombresDias[fecha.getDay()]}</span>
+                    <span class="dia-numero">${String(dia).padStart(2, '0')}</span>
+                `;
+
+                btn.addEventListener("click", function () {
+                    fechaSeleccionada = this.dataset.fecha;
+                    inputDiaSeleccionado.value = this.dataset.dayofweek;
+                    renderDias();
+                });
+
+                diasContainer.appendChild(btn);
+            }
+        }
+
+        document.getElementById("btnMesAnterior").addEventListener("click", function () {
+            fechaBase.setMonth(fechaBase.getMonth() - 1);
+            renderDias();
+        });
+
+        document.getElementById("btnMesSiguiente").addEventListener("click", function () {
+            fechaBase.setMonth(fechaBase.getMonth() + 1);
+            renderDias();
+        });
+
+        renderDias();
+    </script>
+}
+
+<script>
+    const popupMensaje = document.getElementById("popupMensaje");
+    const btnCerrarPopup = document.getElementById("btnCerrarPopup");
+
+    if (popupMensaje && btnCerrarPopup) {
+        btnCerrarPopup.addEventListener("click", function () {
+            popupMensaje.style.display = "none";
+        });
+    }
+
+    const popupError = document.getElementById("popupError");
+    const btnCerrarPopupError = document.getElementById("btnCerrarPopupError");
+
+    if (popupError && btnCerrarPopupError) {
+        btnCerrarPopupError.addEventListener("click", function () {
+            popupError.style.display = "none";
+        });
+    }
+
+    const popupValidacion = document.getElementById("popupValidacion");
+    const btnCerrarPopupValidacion = document.getElementById("btnCerrarPopupValidacion");
+
+    if (popupValidacion && btnCerrarPopupValidacion) {
+        btnCerrarPopupValidacion.addEventListener("click", function () {
+            popupValidacion.style.display = "none";
+        });
+    }
+</script>
+
+@functions {
+    public string TraducirDia(DayOfWeek dia)
+    {
+        return dia switch
+        {
+            DayOfWeek.Monday => "Lunes",
+            DayOfWeek.Tuesday => "Martes",
+            DayOfWeek.Wednesday => "Miércoles",
+            DayOfWeek.Thursday => "Jueves",
+            DayOfWeek.Friday => "Viernes",
+            DayOfWeek.Saturday => "Sábado",
+            DayOfWeek.Sunday => "Domingo",
+            _ => dia.ToString()
+        };
+    }
 }
