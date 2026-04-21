@@ -33,23 +33,14 @@
                 <div class="card-buttons">
                     <a class="btn-card btn-reservar"
                        asp-controller="Citas"
-                       asp-action="Create"
+                       asp-action="Reservar"
                        asp-route-emprendimientoId="@e.Id">
                         Reservar
                     </a>
 
-                    <a class="btn-card btn-editar"
-                       asp-controller="Emprendimientos"
-                       asp-action="Edit"
-                       asp-route-id="@e.Id">
-                        Editar
-                    </a>
-
-                    <a class="btn-card btn-eliminar"
-                       asp-controller="Emprendimientos"
-                       asp-action="Delete"
-                       asp-route-id="@e.Id">
-                        Eliminar
+                    <a class="btn-card btn-citas"
+                       href="@Url.Action("MisCitas", "Citas", new { emprendimientoId = e.Id })">
+                        Ver citas
                     </a>
                 </div>
             </div>

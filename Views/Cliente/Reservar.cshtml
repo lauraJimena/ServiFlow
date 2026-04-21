@@ -1,0 +1,296 @@
+﻿@model ServiFlow.ViewModels.ReservarCitaVM
+@{
+    Layout = "_LayoutCliente";
+    ViewData["Title"] = "Reservar";
+}
+
+<link rel="stylesheet" href="~/css/ReservarCliente.css" asp-append-version="true" />
+
+<div class="agenda-wrap">
+    <div class="agenda-card">
+        <h1>Agenda tu cita</h1>
+        <p class="subtitulo">@Model.NombreEmprendimiento</p>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="msg ok">@TempData["Success"]</div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="msg error">@TempData["Error"]</div>
+        }
+
+        <section class="bloque">
+            <h3>📅 Indícanos el día</h3>
+            <div class="mes-nav">
+                <button type="button" id="btnMesAnterior">❮</button>
+                <span id="mesActual"></span>
+                <button type="button" id="btnMesSiguiente">❯</button>
+            </div>
+            <div id="diasContainer" class="chips"></div>
+        </section>
+
+        <section class="bloque">
+            <h3>🧰 Servicios disponibles</h3>
+            <div id="serviciosContainer" class="chips">
+                @foreach (var servicio in Model.Servicios)
+                {
+                    <button type="button"
+                            class="chip-servicio"
+                            data-servicio-id="@servicio.Id"
+                            data-servicio-nombre="@servicio.Nombre">
+                        @servicio.Nombre
+                    </button>
+                }
+            </div>
+        </section>
+
+        <section class="bloque" id="bloqueHoras" style="display:none;">
+            <h3>🕒 Horas disponibles</h3>
+
+            <div class="franjas">
+                <button type="button" id="btnManana" class="franja active">☀️ Mañana</button>
+                <button type="button" id="btnTarde" class="franja">🌙 Tarde</button>
+            </div>
+
+            <div id="mensajeSinDisponibilidad" class="msg error" style="display:none;">
+                No hay disponibilidad para la selección actual.
+            </div>
+
+            <div id="horasContainer" class="horas-grid"></div>
+        </section>
+
+        <div class="resumen">
+            <p><strong>Fecha:</strong> <span id="fechaResumen">No seleccionada</span></p>
+            <p><strong>Servicio:</strong> <span id="servicioResumen">No seleccionado</span></p>
+            <p><strong>Hora:</strong> <span id="horaResumen">No seleccionada</span></p>
+        </div>
+
+        <button type="button" id="btnAbrirModal" class="btn-confirmar" disabled>Confirmar</button>
+
+        <form asp-controller="Citas" asp-action="Crear" method="post" id="formReserva">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="EmprendimientoId" value="@Model.EmprendimientoId" />
+            <input type="hidden" name="ServicioId" id="ServicioId" />
+            <input type="hidden" name="Fecha" id="Fecha" />
+            <input type="hidden" name="HoraSeleccionada" id="HoraSeleccionada" />
+        </form>
+    </div>
+</div>
+
+<div id="modalConfirmacion" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+        <h3>Confirmar cita</h3>
+        <p><strong>Emprendimiento:</strong> @Model.NombreEmprendimiento</p>
+        <p><strong>Fecha:</strong> <span id="modalFecha"></span></p>
+        <p><strong>Servicio:</strong> <span id="modalServicio"></span></p>
+        <p><strong>Hora:</strong> <span id="modalHora"></span></p>
+
+        <div class="modal-actions">
+            <button type="button" id="btnCancelarModal" class="btn-secundario">Cancelar</button>
+            <button type="button" id="btnConfirmarModal" class="btn-confirmar-modal">Sí, agendar</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const emprendimientoId = @Model.EmprendimientoId;
+        let fechaSeleccionada = null;
+        let servicioSeleccionado = null;
+        let servicioNombre = null;
+        let horaSeleccionada = null;
+        let franjaActual = "manana";
+        let horasDisponibles = [];
+        let fechaBase = new Date();
+
+        const nombresMeses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+        const nombresDias = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
+
+        function formatoIso(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, "0");
+            const d = String(date.getDate()).padStart(2, "0");
+            return `${y}-${m}-${d}`;
+        }
+
+        function renderDias() {
+            const cont = document.getElementById("diasContainer");
+            const mesActual = document.getElementById("mesActual");
+            cont.innerHTML = "";
+
+            const year = fechaBase.getFullYear();
+            const month = fechaBase.getMonth();
+            mesActual.textContent = nombresMeses[month];
+
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+
+            const ultimoDia = new Date(year, month + 1, 0).getDate();
+
+            for (let dia = 1; dia <= ultimoDia; dia++) {
+                const fecha = new Date(year, month, dia);
+                fecha.setHours(0, 0, 0, 0);
+
+                if (fecha < hoy) continue;
+
+                const iso = formatoIso(fecha);
+
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "chip-dia";
+
+                if (fechaSeleccionada === iso) {
+                    btn.classList.add("active");
+                }
+
+                btn.innerHTML = `
+                    <span>${nombresDias[fecha.getDay()]}</span>
+                    <strong>${String(dia).padStart(2, "0")}</strong>
+                `;
+
+                btn.onclick = () => {
+                    fechaSeleccionada = iso;
+                    document.getElementById("Fecha").value = iso;
+                    horaSeleccionada = null;
+                    document.getElementById("HoraSeleccionada").value = "";
+                    actualizarResumen();
+                    renderDias();
+                    cargarHorasSiAplica();
+                };
+
+                cont.appendChild(btn);
+            }
+        }
+
+        document.querySelectorAll(".chip-servicio").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".chip-servicio").forEach(x => x.classList.remove("active"));
+                btn.classList.add("active");
+
+                servicioSeleccionado = btn.dataset.servicioId;
+                servicioNombre = btn.dataset.servicioNombre;
+                document.getElementById("ServicioId").value = servicioSeleccionado;
+
+                horaSeleccionada = null;
+                document.getElementById("HoraSeleccionada").value = "";
+
+                actualizarResumen();
+                cargarHorasSiAplica();
+            });
+        });
+
+        async function cargarHorasSiAplica() {
+            const bloque = document.getElementById("bloqueHoras");
+            const mensaje = document.getElementById("mensajeSinDisponibilidad");
+            const horasCont = document.getElementById("horasContainer");
+
+            horasCont.innerHTML = "";
+            mensaje.style.display = "none";
+
+            if (!fechaSeleccionada || !servicioSeleccionado) {
+                bloque.style.display = "none";
+                return;
+            }
+
+            bloque.style.display = "block";
+
+            const url = `/Citas/ObtenerHorasDisponibles?emprendimientoId=${emprendimientoId}&servicioId=${servicioSeleccionado}&fecha=${fechaSeleccionada}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            horasDisponibles = data || [];
+            renderHoras();
+        }
+
+        function renderHoras() {
+            const horasCont = document.getElementById("horasContainer");
+            const mensaje = document.getElementById("mensajeSinDisponibilidad");
+            horasCont.innerHTML = "";
+
+            let filtradas = horasDisponibles.filter(h => {
+                const hora = parseInt(h.value.split(":")[0]);
+                return franjaActual === "manana" ? hora < 12 : hora >= 12;
+            });
+
+            if (filtradas.length === 0) {
+                mensaje.style.display = "block";
+                return;
+            }
+
+            mensaje.style.display = "none";
+
+            filtradas.forEach(h => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "hora-btn";
+
+                if (horaSeleccionada === h.value) {
+                    btn.classList.add("active");
+                }
+
+                btn.textContent = h.text;
+
+                btn.onclick = () => {
+                    horaSeleccionada = h.value;
+                    document.getElementById("HoraSeleccionada").value = h.value;
+                    actualizarResumen();
+                    renderHoras();
+                };
+
+                horasCont.appendChild(btn);
+            });
+        }
+
+        function actualizarResumen() {
+            document.getElementById("fechaResumen").textContent = fechaSeleccionada ?? "No seleccionada";
+            document.getElementById("servicioResumen").textContent = servicioNombre ?? "No seleccionado";
+            document.getElementById("horaResumen").textContent = horaSeleccionada ?? "No seleccionada";
+
+            const listo = fechaSeleccionada && servicioSeleccionado && horaSeleccionada;
+            document.getElementById("btnAbrirModal").disabled = !listo;
+        }
+
+        document.getElementById("btnManana").onclick = () => {
+            franjaActual = "manana";
+            document.getElementById("btnManana").classList.add("active");
+            document.getElementById("btnTarde").classList.remove("active");
+            renderHoras();
+        };
+
+        document.getElementById("btnTarde").onclick = () => {
+            franjaActual = "tarde";
+            document.getElementById("btnTarde").classList.add("active");
+            document.getElementById("btnManana").classList.remove("active");
+            renderHoras();
+        };
+
+        document.getElementById("btnMesAnterior").onclick = () => {
+            fechaBase.setMonth(fechaBase.getMonth() - 1);
+            renderDias();
+        };
+
+        document.getElementById("btnMesSiguiente").onclick = () => {
+            fechaBase.setMonth(fechaBase.getMonth() + 1);
+            renderDias();
+        };
+
+        document.getElementById("btnAbrirModal").onclick = () => {
+            document.getElementById("modalFecha").textContent = fechaSeleccionada;
+            document.getElementById("modalServicio").textContent = servicioNombre;
+            document.getElementById("modalHora").textContent = horaSeleccionada;
+            document.getElementById("modalConfirmacion").style.display = "flex";
+        };
+
+        document.getElementById("btnCancelarModal").onclick = () => {
+            document.getElementById("modalConfirmacion").style.display = "none";
+        };
+
+        document.getElementById("btnConfirmarModal").onclick = () => {
+            document.getElementById("formReserva").submit();
+        };
+
+        renderDias();
+    </script>
+}

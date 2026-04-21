@@ -1,19 +1,24 @@
-﻿namespace ServiFlow.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class Cita
+namespace ServiFlow.Models
 {
-    public int Id { get; set; }
+    public class Cita
+    {
+        public int Id { get; set; }
 
-    [Required]
-    public string NombreCliente { get; set; }
+        public int UsuarioId { get; set; }
+        public Usuario? Usuario { get; set; }
 
-    [Required]
-    public DateTime Fecha { get; set; }
+        public int EmprendimientoId { get; set; }
+        public Emprendimiento? Emprendimiento { get; set; }
 
-    [Required]
-    public string Servicio { get; set; }
+        public int ServicioId { get; set; }
+        public Servicio? Servicio { get; set; }
 
-    public int EmprendimientoId { get; set; }
-    public Emprendimiento Emprendimiento { get; set; }
+        [Required]
+        public DateTime Fecha { get; set; }
+
+        [StringLength(30)]
+        public string Estado { get; set; } = "Pendiente";
+    }
 }

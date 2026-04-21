@@ -1,21 +1,24 @@
-﻿namespace ServiFlow.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class Emprendimiento
+namespace ServiFlow.Models
 {
-    public int Id { get; set; }
+    public class Emprendimiento
+    {
+        public int Id { get; set; }
 
-    [Required]
-    public string Nombre { get; set; } = string.Empty;
+        [Required]
+        public string Nombre { get; set; } = string.Empty;
 
-    public string? TipoServicio { get; set; }
+        public string? TipoServicio { get; set; }
 
-    public string? Descripcion { get; set; }
+        public string? Descripcion { get; set; }
 
-    public string? ImagenUrl { get; set; }
+        public string? ImagenUrl { get; set; }
 
-    public bool EsPropio { get; set; } = true;
+        public bool EsPropio { get; set; } = true;
 
-    public List<TareaKanban> TareasKanban { get; set; } = new();
-    public List<Disponibilidad> Disponibilidades { get; set; } = new();
+        public List<TareaKanban> TareasKanban { get; set; } = new();
+        public List<Disponibilidad> Disponibilidades { get; set; } = new();
+        public List<Servicio> Servicios { get; set; } = new();
+    }
 }

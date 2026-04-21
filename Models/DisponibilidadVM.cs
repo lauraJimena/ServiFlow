@@ -1,16 +1,27 @@
 ﻿using ServiFlow.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ServiFlow.ViewModels
 {
     public class DisponibilidadVM
     {
-        public int? EmprendimientoIdSeleccionado { get; set; }
+        public int EmprendimientoId { get; set; }
 
-        public List<SelectListItem> Emprendimientos { get; set; } = new();
+        public List<Servicio> Servicios { get; set; } = new();
 
-        public Disponibilidad NuevaDisponibilidad { get; set; } = new();
+        public int ServicioIdSeleccionado { get; set; }
+
+        public DayOfWeek? DiaSeleccionado { get; set; }
+
+        public TimeSpan HoraInicio { get; set; }
+        public TimeSpan HoraFin { get; set; }
 
         public List<Disponibilidad> HorariosExistentes { get; set; } = new();
+
+        public int CurrentPage { get; set; } = 1;
+        public int TotalPages { get; set; } = 1;
+        public int PageSize { get; set; } = 4;
+        public int TotalItems { get; set; }
+
+        public string TabActiva { get; set; } = "configurar";
     }
 }

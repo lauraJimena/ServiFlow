@@ -1,0 +1,204 @@
+﻿@model ServiFlow.ViewModels.CitasEmprendedorVM
+
+@{
+    Layout = "_LayoutCliente";
+    ViewData["Title"] = "Citas del emprendimiento";
+}
+
+<link rel="stylesheet" href="~/css/CitasEmprendimiento.css" asp-append-version="true" />
+
+<div class="citas-page">
+    <div class="citas-card">
+        <div class="citas-header">
+            <div>
+                <h2>Reservas recibidas</h2>
+                <p class="citas-subtitle">@Model.NombreEmprendimiento</p>
+            </div>
+
+            <div class="citas-badge">
+                @Model.TotalItems cita(s)
+            </div>
+        </div>
+
+        <form method="get" asp-controller="Citas" asp-action="CitasEmprendimiento" class="filtros-form">
+            <input type="hidden" name="emprendimientoId" value="@Model.EmprendimientoId" />
+
+            <div class="filtro-group">
+                <label for="servicioIdFiltro">Filtrar por servicio</label>
+                <select id="servicioIdFiltro" name="servicioIdFiltro" class="filtro-input">
+                    <option value="">Todos</option>
+                    @foreach (var servicio in Model.Servicios)
+                    {
+                        if (Model.ServicioIdFiltro == servicio.Id)
+                        {
+                            <option value="@servicio.Id" selected>@servicio.Nombre</option>
+                        }
+                        else
+                        {
+                            <option value="@servicio.Id">@servicio.Nombre</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="filtro-group">
+                <label for="fechaFiltro">Filtrar por fecha</label>
+                <input type="date"
+                       id="fechaFiltro"
+                       name="fechaFiltro"
+                       class="filtro-input"
+                       value="@(Model.FechaFiltro.HasValue? Model.FechaFiltro.Value.ToString("yyyy-MM-dd") : "")" />
+            </div>
+
+            <div class="filtro-actions">
+                <button type="submit" class="btn-filtrar">Aplicar filtros</button>
+
+                <a asp-controller="Citas"
+                   asp-action="CitasEmprendimiento"
+                   asp-route-emprendimientoId="@Model.EmprendimientoId"
+                   class="btn-limpiar">
+                    Limpiar
+                </a>
+            </div>
+        </form>
+
+        @if (Model.Citas.Any())
+        {
+            <div class="citas-grid">
+                @foreach (var cita in Model.Citas)
+                {
+                    <div class="cita-item">
+                        <div class="cita-top">
+                            <div class="cita-servicio">
+                                @(cita.Servicio?.Nombre ?? "Servicio")
+                            </div>
+
+                            <span class="estado-chip @ObtenerClaseEstado(cita.Estado)">
+                                @(string.IsNullOrWhiteSpace(cita.Estado) ? "Sin estado" : cita.Estado)
+                            </span>
+                        </div>
+
+                        <div class="cita-body">
+                            <div class="cita-row">
+                                <span class="cita-label">Cliente</span>
+                                <span class="cita-value">@(cita.Usuario?.Nombre ?? "Usuario")</span>
+                            </div>
+
+                            <div class="cita-row">
+                                <span class="cita-label">Correo</span>
+                                <span class="cita-value">@(cita.Usuario?.Email ?? "-")</span>
+                            </div>
+
+                            <div class="cita-row">
+                                <span class="cita-label">Fecha</span>
+                                <span class="cita-value">@cita.Fecha.ToString("dd/MM/yyyy")</span>
+                            </div>
+
+                            <div class="cita-row">
+                                <span class="cita-label">Día</span>
+                                <span class="cita-value">@TraducirDia(cita.Fecha.DayOfWeek)</span>
+                            </div>
+
+                            <div class="cita-row">
+                                <span class="cita-label">Hora</span>
+                                <span class="cita-value">@cita.Fecha.ToString("hh:mm tt")</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (Model.TotalPages > 1)
+            {
+                <nav class="pagination-wrap">
+                    @if (Model.CurrentPage > 1)
+                    {
+                        <a class="page-link"
+                           asp-controller="Citas"
+                           asp-action="CitasEmprendimiento"
+                           asp-route-emprendimientoId="@Model.EmprendimientoId"
+                           asp-route-servicioIdFiltro="@Model.ServicioIdFiltro"
+                           asp-route-fechaFiltro="@(Model.FechaFiltro?.ToString("yyyy-MM-dd"))"
+                           asp-route-page="@(Model.CurrentPage - 1)">
+                            Anterior
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="page-disabled">Anterior</span>
+                    }
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <a class="page-number @(i == Model.CurrentPage ? "active" : "")"
+                           asp-controller="Citas"
+                           asp-action="CitasEmprendimiento"
+                           asp-route-emprendimientoId="@Model.EmprendimientoId"
+                           asp-route-servicioIdFiltro="@Model.ServicioIdFiltro"
+                           asp-route-fechaFiltro="@(Model.FechaFiltro?.ToString("yyyy-MM-dd"))"
+                           asp-route-page="@i">
+                            @i
+                        </a>
+                    }
+
+                    @if (Model.CurrentPage < Model.TotalPages)
+                    {
+                        <a class="page-link"
+                           asp-controller="Citas"
+                           asp-action="CitasEmprendimiento"
+                           asp-route-emprendimientoId="@Model.EmprendimientoId"
+                           asp-route-servicioIdFiltro="@Model.ServicioIdFiltro"
+                           asp-route-fechaFiltro="@(Model.FechaFiltro?.ToString("yyyy-MM-dd"))"
+                           asp-route-page="@(Model.CurrentPage + 1)">
+                            Siguiente
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="page-disabled">Siguiente</span>
+                    }
+                </nav>
+            }
+        }
+        else
+        {
+            <div class="empty-state">
+                <div class="empty-icon">📅</div>
+                <h3>No hay reservas para mostrar</h3>
+                <p>No se encontraron citas con los filtros seleccionados.</p>
+            </div>
+        }
+    </div>
+</div>
+
+@functions {
+    public string TraducirDia(DayOfWeek dia)
+    {
+        return dia switch
+        {
+            DayOfWeek.Monday => "Lunes",
+            DayOfWeek.Tuesday => "Martes",
+            DayOfWeek.Wednesday => "Miércoles",
+            DayOfWeek.Thursday => "Jueves",
+            DayOfWeek.Friday => "Viernes",
+            DayOfWeek.Saturday => "Sábado",
+            DayOfWeek.Sunday => "Domingo",
+            _ => dia.ToString()
+        };
+    }
+
+    public string ObtenerClaseEstado(string? estado)
+    {
+        if (string.IsNullOrWhiteSpace(estado))
+            return "estado-neutral";
+
+        return estado.Trim().ToLower() switch
+        {
+            "pendiente" => "estado-pendiente",
+            "confirmada" => "estado-confirmada",
+            "cancelada" => "estado-cancelada",
+            "completada" => "estado-completada",
+            _ => "estado-neutral"
+        };
+    }
+}

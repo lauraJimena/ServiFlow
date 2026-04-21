@@ -48,19 +48,31 @@
                 <div class="card-buttons">
 
 
-                    <a class="btn-card btn-editar"
-                       asp-controller="Emprendimientos"
-                       asp-action="Edit"
-                       asp-route-id="@e.Id">
-                        Editar
-                    </a>
+                    <div class="card-buttons">
 
-                    <a class="btn-card btn-eliminar"
-                       asp-controller="Emprendimientos"
-                       asp-action="Delete"
-                       asp-route-id="@e.Id">
-                        Eliminar
-                    </a>
+                        <div class="card-buttons">
+                            <a class="btn-card btn-editar"
+                               asp-controller="Emprendimientos"
+                               asp-action="Edit"
+                               asp-route-id="@e.Id">
+                                Editar
+                            </a>
+
+                            <a class="btn-card btn-disponibilidad"
+                               asp-controller="Disponibilidades"
+                               asp-action="Index"
+                               asp-route-emprendimientoId="@e.Id">
+                                Disponibilidad
+                            </a>
+                            <a class="btn-card btn-citas"
+                               asp-controller="Citas"
+                               asp-action="CitasEmprendimiento"
+                               asp-route-emprendimientoId="@e.Id">
+                                Ver citas
+                            </a>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </article>

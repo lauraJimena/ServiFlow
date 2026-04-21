@@ -6,7 +6,9 @@
 <ul>
     @foreach (var c in (List<Cita>)ViewBag.Citas)
     {
-        <li>@c.NombreCliente - @c.Servicio - @c.Fecha.ToString("dd/MM/yyyy HH:mm")</li>
+        <li>
+            @c.Usuario?.Nombre - @c.Servicio?.Nombre - @c.Fecha.ToString("dd/MM/yyyy HH:mm")
+        </li>
     }
 </ul>
 
