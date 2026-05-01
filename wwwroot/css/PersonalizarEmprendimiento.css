@@ -1,0 +1,558 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+}
+
+main,
+.container,
+.pb-3 {
+    width: 100%;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.personalizar-page {
+    width: 100%;
+    min-height: 100vh;
+    padding: 34px clamp(18px, 5vw, 75px) 70px;
+    background: #070014;
+}
+
+.d-none {
+    display: none !important;
+}
+
+/* ALERTAS */
+.alerta {
+    width: min(100%, 1340px);
+    margin: 0 auto 18px;
+    padding: 14px 20px;
+    border-radius: 14px;
+    font-weight: 600;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.alerta-ok {
+    background: rgba(34, 197, 94, 0.18);
+    border: 1px solid rgba(34, 197, 94, 0.55);
+}
+
+.alerta-error {
+    background: rgba(239, 68, 68, 0.18);
+    border: 1px solid rgba(239, 68, 68, 0.55);
+}
+
+.hide-alert {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+/* FORMULARIO SUPERIOR */
+.hero-form {
+    width: min(100%, 1340px);
+    margin: 0 auto;
+}
+
+/* TARJETA PRINCIPAL */
+.hero-personalizar {
+    width: 100%;
+    min-height: 365px;
+    padding: 24px 26px;
+    display: grid;
+    grid-template-columns: minmax(500px, 0.95fr) minmax(500px, 1.05fr);
+    gap: 28px;
+    align-items: stretch;
+    border: 2px solid rgba(190, 44, 255, 0.95);
+    border-radius: 24px;
+    background: rgba(10, 0, 34, 0.72);
+    box-shadow: 0 0 18px rgba(190, 44, 255, 0.35), inset 0 0 35px rgba(120, 0, 180, 0.18);
+}
+
+/* IZQUIERDA: LOGO + BOTÓN + INFO */
+.hero-left {
+    display: grid;
+    grid-template-columns: 185px minmax(0, 1fr);
+    gap: 28px;
+    align-items: center;
+    min-width: 0;
+}
+
+/* COLUMNA SOLO LOGO + GUARDAR */
+.logo-actions-column {
+    width: 185px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+/* LOGO */
+.logo-upload {
+    width: 185px;
+    height: 185px;
+    border-radius: 50%;
+    border: 2px dashed rgba(255, 255, 255, 0.62);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.035);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+    .logo-upload:hover,
+    .banner-upload:hover,
+    .servicio-img-upload:hover {
+        border-color: #d932ff;
+        box-shadow: 0 0 18px rgba(217, 50, 255, 0.35);
+    }
+
+    .logo-upload input,
+    .banner-upload input,
+    .servicio-img-upload input {
+        display: none;
+    }
+
+    .logo-upload img,
+    .servicio-img-upload img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.preview-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.plus {
+    font-size: 58px;
+    line-height: 1;
+    font-weight: 300;
+}
+
+.logo-upload small,
+.banner-upload small,
+.servicio-img-upload small {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* BOTÓN GUARDAR DEBAJO DEL LOGO */
+.btn-guardar {
+    width: 150px;
+    min-width: 0;
+    padding: 11px 12px;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.15;
+    text-align: center;
+    cursor: pointer;
+    background: linear-gradient(100deg, #7c22ff, #d90fd1);
+    box-shadow: 0 0 18px rgba(218, 15, 209, 0.48);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+    .btn-guardar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 24px rgba(218, 15, 209, 0.68);
+    }
+
+/* INFO: SE QUEDA AL LADO DEL LOGO */
+.hero-info {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.input-title,
+.input-subtitle,
+.input-description,
+.servicio-nombre,
+.servicio-descripcion,
+.servicio-precio {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #fff;
+    font-family: inherit;
+}
+
+    .input-title::placeholder,
+    .input-subtitle::placeholder,
+    .input-description::placeholder,
+    .servicio-nombre::placeholder,
+    .servicio-descripcion::placeholder,
+    .servicio-precio::placeholder {
+        color: rgba(255, 255, 255, 0.92);
+        opacity: 1;
+    }
+
+.input-title {
+    font-size: clamp(36px, 4vw, 48px);
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 18px;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.input-subtitle {
+    font-size: 21px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.input-description {
+    min-height: 48px;
+    resize: none;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+/* CALIFICACIÓN */
+.rating-row {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.stars {
+    font-size: 25px;
+    letter-spacing: 3px;
+    line-height: 1;
+    color: #d126ff;
+    white-space: nowrap;
+}
+
+/* BANNER DERECHO AJUSTADO */
+.banner-upload {
+    width: 100%;
+    height: 315px;
+    max-height: 315px;
+    border: 2px dashed rgba(255, 255, 255, 0.58);
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.035);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+    .banner-upload img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+        display: block;
+    }
+
+.banner-plus {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 52px;
+    font-weight: 300;
+    line-height: 1;
+}
+
+/* SERVICIOS */
+.servicios-section {
+    width: min(100%, 1340px);
+    margin: 20px auto 0;
+}
+
+    .servicios-section h2 {
+        margin: 0 0 14px;
+        font-size: clamp(28px, 3vw, 34px);
+        line-height: 1.1;
+        font-weight: 800;
+        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+    }
+
+.servicios-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.servicio-card {
+    min-height: 350px;
+    padding: 20px;
+    border: 1.8px solid rgba(190, 44, 255, 0.72);
+    border-radius: 17px;
+    background: rgba(10, 0, 34, 0.72);
+    box-shadow: inset 0 0 22px rgba(123, 0, 255, 0.16), 0 0 14px rgba(185, 0, 255, 0.13);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.servicio-img-upload {
+    width: 100%;
+    height: 150px;
+    border: 2px dashed rgba(255, 255, 255, 0.58);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    overflow: hidden;
+    margin-bottom: 16px;
+    background: rgba(255, 255, 255, 0.035);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.service-plus {
+    width: 57px;
+    height: 57px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.52);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 45px;
+    font-weight: 300;
+    line-height: 1;
+}
+
+.servicio-nombre,
+.servicio-card h3 {
+    margin: 0 0 8px;
+    font-size: 25px;
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+.servicio-descripcion,
+.servicio-card p {
+    min-height: 54px;
+    resize: none;
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.servicio-bottom {
+    margin-top: auto;
+    padding-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+    .servicio-precio,
+    .servicio-bottom strong {
+        font-size: 21px;
+        font-weight: 800;
+        color: #bf4cff;
+    }
+
+        .servicio-precio::-webkit-outer-spin-button,
+        .servicio-precio::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+.servicio-precio {
+    appearance: textfield;
+}
+
+.btn-add,
+.btn-delete {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 0, 220, 0.85);
+    background: rgba(153, 0, 255, 0.25);
+    color: #fff;
+    font-size: 34px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    flex-shrink: 0;
+}
+
+    .btn-add:hover,
+    .btn-delete:hover {
+        background: linear-gradient(135deg, #7c22ff, #d90fd1);
+        box-shadow: 0 0 18px rgba(217, 15, 209, 0.7);
+        transform: scale(1.06);
+    }
+
+.btn-delete {
+    font-size: 30px;
+    background: rgba(255, 0, 90, 0.18);
+}
+
+.servicio-bottom form {
+    margin: 0;
+}
+
+.empty-card {
+    pointer-events: none;
+}
+
+/* TABLET */
+@media screen and (max-width: 1180px) {
+    .hero-personalizar {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-left {
+        grid-template-columns: 185px minmax(0, 1fr);
+    }
+
+    .banner-upload {
+        height: 280px;
+        max-height: 280px;
+    }
+
+    .servicios-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* CELULAR */
+@media screen and (max-width: 760px) {
+    .personalizar-page {
+        padding: 22px 14px 50px;
+    }
+
+    .hero-personalizar {
+        padding: 20px;
+        gap: 24px;
+    }
+
+    .hero-left {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+        row-gap: 20px;
+    }
+
+    .logo-actions-column {
+        width: 165px;
+    }
+
+    .logo-upload {
+        width: 165px;
+        height: 165px;
+    }
+
+    .btn-guardar {
+        width: 145px;
+        font-size: 13px;
+        padding: 10px 10px;
+    }
+
+    .hero-info {
+        align-items: center;
+    }
+
+    .rating-row {
+        justify-content: center;
+    }
+
+    .stars {
+        font-size: 22px;
+        letter-spacing: 2px;
+    }
+
+    .banner-upload {
+        height: 230px;
+        max-height: 230px;
+    }
+
+    .servicios-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .servicio-card {
+        min-height: 330px;
+    }
+}
+
+/* CELULAR PEQUEÑO */
+@media screen and (max-width: 420px) {
+    .input-title {
+        font-size: 31px;
+    }
+
+    .input-subtitle,
+    .rating-row,
+    .servicio-descripcion,
+    .servicio-card p {
+        font-size: 16px;
+    }
+
+    .logo-actions-column {
+        width: 155px;
+    }
+
+    .logo-upload {
+        width: 155px;
+        height: 155px;
+    }
+
+    .btn-guardar {
+        width: 135px;
+        font-size: 12.5px;
+    }
+
+    .servicio-card {
+        padding: 18px;
+    }
+}

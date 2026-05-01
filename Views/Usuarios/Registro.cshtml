@@ -1,44 +1,44 @@
 ﻿@model ServiFlow.ViewModels.RegistroVM
 <link rel="stylesheet" href="~/css/Create.css" asp-append-version="true" />
+
 @{
     ViewData["Title"] = "Registro";
 }
 
 <div class="registro-container">
 
-    <!-- FORMULARIO -->
     <div class="registro-form">
 
         <h2>Registro</h2>
 
         <form asp-action="Registro" method="post">
             <div>
-        
                 <input asp-for="Nombre" class="input-custom" placeholder="Nombre" />
                 <span asp-validation-for="Nombre" style="color:red"></span>
             </div>
 
             <div style="margin-top:10px;">
-       
                 <input asp-for="Email" class="input-custom" placeholder="Correo electrónico" />
                 <span asp-validation-for="Email" style="color:red"></span>
             </div>
 
             <div style="margin-top:10px;">
-        
+                <input asp-for="Telefono" class="input-custom" placeholder="Teléfono" />
+                <span asp-validation-for="Telefono" style="color:red"></span>
+            </div>
+
+            <div style="margin-top:10px;">
                 <input asp-for="Password" type="password" class="input-custom" placeholder="Contraseña" />
                 <span asp-validation-for="Password" style="color:red"></span>
             </div>
 
             <div style="margin-top:10px;">
-        
                 <input asp-for="ConfirmarPassword" type="password" class="input-custom" placeholder="Confirmar contraseña" />
                 <span asp-validation-for="ConfirmarPassword" style="color:red"></span>
             </div>
 
             <div style="margin-top:10px;">
-        
-                <select asp-for="TipoUsuario" class="input-custom" select-placeholder">
+                <select asp-for="TipoUsuario" class="input-custom">
                     <option value="" disabled selected hidden>Seleccione el tipo de usuario</option>
                     <option value="Cliente">Cliente</option>
                     <option value="Emprendedor">Emprendedor</option>
@@ -56,7 +56,6 @@
         </form>
     </div>
 
-    <!-- IMAGEN -->
     <div class="registro-img">
         <img src="~/images/registro.png" alt="Registro ServiFlow" class="img-registro">
     </div>

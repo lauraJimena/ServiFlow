@@ -1,0 +1,356 @@
+﻿@model ServiFlow.Models.PersonalizarEmprendimientoVM
+
+@{
+    ViewData["Title"] = "Personalizar emprendimiento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/PersonalizarEmprendimiento.css" asp-append-version="true" />
+
+<div class="personalizar-page">
+
+    <div id="mensajeAjax" class="alerta alerta-ok d-none"></div>
+    <div id="errorAjax" class="alerta alerta-error d-none"></div>
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alerta alerta-ok">@TempData["Mensaje"]</div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alerta alerta-error">@TempData["Error"]</div>
+    }
+
+    <form asp-action="Personalizar" asp-controller="Emprendimientos" method="post" enctype="multipart/form-data" class="hero-form">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="Id" />
+
+        <section class="hero-personalizar">
+
+            <div class="hero-left">
+
+                <div class="logo-actions-column">
+
+                    <label class="logo-upload image-preview-box">
+                        <img id="previewLogo"
+                             src="@Model.LogoActualUrl"
+                             alt="Logo personalizado"
+                             class="preview-img @(string.IsNullOrWhiteSpace(Model.LogoActualUrl) ? "d-none" : "")" />
+
+                        <div id="placeholderLogo" class="preview-placeholder @(string.IsNullOrWhiteSpace(Model.LogoActualUrl) ? "" : "d-none")">
+                            <span class="plus">+</span>
+                            <small>Añadir imagen</small>
+                        </div>
+
+                        <input asp-for="LogoArchivo"
+                               type="file"
+                               accept="image/*"
+                               data-preview-img="previewLogo"
+                               data-preview-placeholder="placeholderLogo" />
+                    </label>
+
+                    <button type="submit" class="btn-guardar">Guardar cambios</button>
+
+                </div>
+
+                <div class="hero-info">
+                    <input asp-for="Nombre" class="input-title" placeholder="Añadir nombre" />
+
+                    <input asp-for="TipoServicio" class="input-subtitle" placeholder="Añadir descripción o especialidad" />
+
+                    <textarea asp-for="Descripcion" class="input-description" placeholder="Añadir descripción"></textarea>
+
+                    <div class="rating-row">
+                        <span class="stars">★ ★ ★ ★ ★</span>
+                        <span>Añadir calificación (ej. 4.9)</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <label class="banner-upload image-preview-box">
+                <img id="previewBanner"
+                     src="@Model.BannerActualUrl"
+                     alt="Imagen principal personalizada"
+                     class="preview-img @(string.IsNullOrWhiteSpace(Model.BannerActualUrl) ? "d-none" : "")" />
+
+                <div id="placeholderBanner" class="preview-placeholder @(string.IsNullOrWhiteSpace(Model.BannerActualUrl) ? "" : "d-none")">
+                    <span class="banner-plus">+</span>
+                    <small>Añadir imagen</small>
+                </div>
+
+                <input asp-for="BannerArchivo"
+                       type="file"
+                       accept="image/*"
+                       data-preview-img="previewBanner"
+                       data-preview-placeholder="placeholderBanner" />
+            </label>
+
+        </section>
+    </form>
+
+    <section class="servicios-section">
+        <h2>Servicios Disponibles</h2>
+
+        <div class="servicios-grid" id="serviciosGrid">
+
+            <form asp-action="AgregarServicio"
+                  asp-controller="Emprendimientos"
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="servicio-card"
+                  id="formAgregarServicio">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" asp-for="Id" />
+
+                <label class="servicio-img-upload image-preview-box">
+                    <img id="previewServicioNuevo"
+                         alt="Imagen del nuevo servicio"
+                         class="preview-img d-none" />
+
+                    <div id="placeholderServicioNuevo" class="preview-placeholder">
+                        <span class="service-plus">+</span>
+                        <small>Añadir imagen</small>
+                    </div>
+
+                    <input asp-for="NuevoServicioImagenArchivo"
+                           type="file"
+                           accept="image/*"
+                           data-preview-img="previewServicioNuevo"
+                           data-preview-placeholder="placeholderServicioNuevo" />
+                </label>
+
+                <input asp-for="NuevoServicioNombre" class="servicio-nombre" placeholder="Añadir nombre" />
+
+                <textarea asp-for="NuevoServicioDescripcion" class="servicio-descripcion" placeholder="Añadir descripción"></textarea>
+
+                <div class="servicio-bottom">
+                    <input asp-for="NuevoServicioPrecio" class="servicio-precio" type="number" min="0" step="0.01" placeholder="Añadir precio" />
+                    <button type="submit" class="btn-add">+</button>
+                </div>
+            </form>
+
+            @foreach (var servicio in Model.Servicios)
+            {
+                <article class="servicio-card">
+                    <div class="servicio-img-upload servicio-img-final">
+                        @if (!string.IsNullOrWhiteSpace(servicio.ImagenUrl))
+                        {
+                            <img src="@servicio.ImagenUrl" alt="@servicio.Nombre" class="preview-img" />
+                        }
+                        else
+                        {
+                            <div class="preview-placeholder">
+                                <span class="service-plus">+</span>
+                                <small>Sin imagen</small>
+                            </div>
+                        }
+                    </div>
+
+                    <h3>@servicio.Nombre</h3>
+
+                    <p>@(string.IsNullOrWhiteSpace(servicio.Descripcion) ? "Sin descripción" : servicio.Descripcion)</p>
+
+                    <div class="servicio-bottom">
+                        <strong>@(servicio.Precio.HasValue ? $"$ {servicio.Precio.Value:N0}" : "Sin precio")</strong>
+
+                        <form asp-action="DesactivarServicio" asp-controller="Emprendimientos" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="servicioId" value="@servicio.Id" />
+                            <input type="hidden" name="emprendimientoId" value="@Model.Id" />
+                            <button type="submit" class="btn-delete">×</button>
+                        </form>
+                    </div>
+                </article>
+            }
+
+        </div>
+    </section>
+
+</div>
+
+<script>
+    function ocultarAlertasTemporales() {
+        setTimeout(() => {
+            document.querySelectorAll('.alerta:not(#mensajeAjax):not(#errorAjax)').forEach(alerta => {
+                alerta.classList.add('hide-alert');
+                setTimeout(() => alerta.remove(), 350);
+            });
+        }, 2500);
+    }
+
+    function mostrarMensaje(texto, esError = false) {
+        const mensaje = document.getElementById(esError ? 'errorAjax' : 'mensajeAjax');
+        const otro = document.getElementById(esError ? 'mensajeAjax' : 'errorAjax');
+
+        otro.classList.add('d-none');
+        otro.textContent = '';
+
+        mensaje.textContent = texto;
+        mensaje.classList.remove('d-none', 'hide-alert');
+
+        setTimeout(() => {
+            mensaje.classList.add('hide-alert');
+            setTimeout(() => {
+                mensaje.classList.add('d-none');
+                mensaje.textContent = '';
+            }, 350);
+        }, 2500);
+    }
+
+    document.querySelectorAll('input[type="file"][data-preview-img]').forEach(input => {
+        input.addEventListener('change', function () {
+            const file = this.files && this.files[0];
+
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                mostrarMensaje('Por favor selecciona un archivo de imagen válido.', true);
+                this.value = '';
+                return;
+            }
+
+            const previewImgId = this.getAttribute('data-preview-img');
+            const placeholderId = this.getAttribute('data-preview-placeholder');
+
+            const previewImg = document.getElementById(previewImgId);
+            const placeholder = document.getElementById(placeholderId);
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                previewImg.src = e.target.result;
+                previewImg.classList.remove('d-none');
+
+                if (placeholder) {
+                    placeholder.classList.add('d-none');
+                }
+            };
+
+            reader.readAsDataURL(file);
+        });
+    });
+
+    const formAgregarServicio = document.getElementById('formAgregarServicio');
+
+    formAgregarServicio.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const form = this;
+        const boton = form.querySelector('.btn-add');
+        const formData = new FormData(form);
+
+        boton.disabled = true;
+        boton.textContent = '...';
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                mostrarMensaje(data.message || 'No se pudo agregar el servicio.', true);
+                return;
+            }
+
+            agregarServicioALista(data.servicio);
+            limpiarFormularioServicio();
+
+            mostrarMensaje(data.message || 'Servicio agregado correctamente.');
+        }
+        catch (error) {
+            mostrarMensaje('Ocurrió un error al agregar el servicio.', true);
+        }
+        finally {
+            boton.disabled = false;
+            boton.textContent = '+';
+        }
+    });
+
+    function agregarServicioALista(servicio) {
+        const grid = document.getElementById('serviciosGrid');
+
+        const imagenHtml = servicio.imagenUrl
+            ? `<img src="${servicio.imagenUrl}" alt="${escapeHtml(servicio.nombre)}" class="preview-img" />`
+            : `<div class="preview-placeholder">
+                    <span class="service-plus">+</span>
+                    <small>Sin imagen</small>
+               </div>`;
+
+        const card = document.createElement('article');
+        card.className = 'servicio-card';
+
+        card.innerHTML = `
+            <div class="servicio-img-upload servicio-img-final">
+                ${imagenHtml}
+            </div>
+
+            <h3>${escapeHtml(servicio.nombre)}</h3>
+
+            <p>${escapeHtml(servicio.descripcion)}</p>
+
+            <div class="servicio-bottom">
+                <strong>${escapeHtml(servicio.precio)}</strong>
+
+                <form action="/Emprendimientos/DesactivarServicio" method="post">
+                    ${obtenerTokenHtml()}
+                    <input type="hidden" name="servicioId" value="${servicio.id}" />
+                    <input type="hidden" name="emprendimientoId" value="${servicio.emprendimientoId}" />
+                    <button type="submit" class="btn-delete">×</button>
+                </form>
+            </div>
+        `;
+
+        grid.appendChild(card);
+    }
+
+    function limpiarFormularioServicio() {
+        const nombre = formAgregarServicio.querySelector('[name="NuevoServicioNombre"]');
+        const descripcion = formAgregarServicio.querySelector('[name="NuevoServicioDescripcion"]');
+        const precio = formAgregarServicio.querySelector('[name="NuevoServicioPrecio"]');
+        const imagen = formAgregarServicio.querySelector('[name="NuevoServicioImagenArchivo"]');
+
+        nombre.value = '';
+        descripcion.value = '';
+        precio.value = '';
+        imagen.value = '';
+
+        const preview = document.getElementById('previewServicioNuevo');
+        const placeholder = document.getElementById('placeholderServicioNuevo');
+
+        preview.src = '';
+        preview.classList.add('d-none');
+        placeholder.classList.remove('d-none');
+    }
+
+    function obtenerTokenHtml() {
+        const token = document.querySelector('input[name="__RequestVerificationToken"]');
+
+        if (!token) return '';
+
+        return `<input name="__RequestVerificationToken" type="hidden" value="${token.value}" />`;
+    }
+
+    function escapeHtml(texto) {
+        if (texto === null || texto === undefined) return '';
+
+        return texto.toString()
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+    }
+
+    ocultarAlertasTemporales();
+</script>

@@ -1,7 +1,7 @@
 ﻿@model ServiFlow.ViewModels.MisCitasClienteVM
 
 @{
-    Layout = "_LayoutCliente";
+    Layout = "_Layout";
     ViewData["Title"] = "Mis citas";
 }
 
@@ -15,8 +15,20 @@
                 <p class="citas-subtitle">@Model.NombreEmprendimiento</p>
             </div>
 
-            <div class="citas-badge">
-                @Model.TotalItems cita(s)
+            <div class="citas-header-right">
+                <form method="get" asp-controller="Citas" asp-action="MisCitas" class="filtro-form">
+                    <input type="hidden" name="emprendimientoId" value="@Model.EmprendimientoId" />
+
+                    <label for="orden" class="filtro-label">Ordenar por</label>
+                    <select name="orden" id="orden" class="filtro-select" onchange="this.form.submit()">
+                        <option value="cercana" selected="@(Model.Orden == "cercana")">Más cercana primero</option>
+                        <option value="lejana" selected="@(Model.Orden == "lejana")">Más lejana primero</option>
+                    </select>
+                </form>
+
+                <div class="citas-badge">
+                    @Model.TotalItems cita(s)
+                </div>
             </div>
         </div>
 
@@ -70,7 +82,8 @@
                            asp-controller="Citas"
                            asp-action="MisCitas"
                            asp-route-emprendimientoId="@Model.EmprendimientoId"
-                           asp-route-page="@(Model.CurrentPage - 1)">
+                           asp-route-page="@(Model.CurrentPage - 1)"
+                           asp-route-orden="@Model.Orden">
                             Anterior
                         </a>
                     }
@@ -85,7 +98,8 @@
                            asp-controller="Citas"
                            asp-action="MisCitas"
                            asp-route-emprendimientoId="@Model.EmprendimientoId"
-                           asp-route-page="@i">
+                           asp-route-page="@i"
+                           asp-route-orden="@Model.Orden">
                             @i
                         </a>
                     }
@@ -96,7 +110,8 @@
                            asp-controller="Citas"
                            asp-action="MisCitas"
                            asp-route-emprendimientoId="@Model.EmprendimientoId"
-                           asp-route-page="@(Model.CurrentPage + 1)">
+                           asp-route-page="@(Model.CurrentPage + 1)"
+                           asp-route-orden="@Model.Orden">
                             Siguiente
                         </a>
                     }

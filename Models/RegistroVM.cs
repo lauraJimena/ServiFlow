@@ -20,5 +20,6 @@ namespace ServiFlow.ViewModels
 
         [Required(ErrorMessage = "Debe elegir un tipo de usuario")]
         public string TipoUsuario { get; set; } = string.Empty;
+        public string? Telefono { get; set; }
     }
 }

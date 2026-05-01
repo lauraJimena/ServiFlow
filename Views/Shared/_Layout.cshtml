@@ -1,37 +1,88 @@
-﻿
+﻿@using Microsoft.AspNetCore.Http
+
+@{
+    var usuarioEmail = Context.Session.GetString("UsuarioEmail");
+    var usuarioNombre = Context.Session.GetString("UsuarioNombre");
+
+    var sesionActiva = !string.IsNullOrEmpty(usuarioEmail);
+
+    var esHome = ViewContext.RouteData.Values["Controller"]?.ToString() == "Home"
+        && ViewContext.RouteData.Values["Action"]?.ToString() == "Index";
+}
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ServiFlow</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/kanban.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/IndexGeneral.css" asp-append-version="true" />
+
     @RenderSection("Styles", required: false)
-   
-    
 </head>
+
 <body class="layout-shell">
     <header class="sf-header">
         <div class="sf-navbar">
+
+            <!-- LOGO -->
             <a class="sf-brand" asp-controller="Home" asp-action="Index">
                 <img src="~/images/logo_serviflow.png" alt="Logo ServiFlow" class="sf-logo" />
                 ServiFlow
             </a>
 
+            <!-- MENÚ -->
             <nav class="sf-menu">
-                <a class="sf-link" asp-controller="Home" asp-action="Index">Servicios</a>               
-                <a class="sf-link" asp-controller="Citas" asp-action="Index">Reservas</a> 
-                         
+                <a class="sf-link" asp-controller="Home" asp-action="Somos">
+                    Quienes somos
+                </a>
+
+                @if (!sesionActiva)
+                {
+                    <a class="sf-link" asp-controller="Usuarios" asp-action="Login">
+                        Iniciar sesión
+                    </a>
+
+                    <a class="sf-link" asp-controller="Usuarios" asp-action="Registro">
+                        Registrarse
+                    </a>
+                }
             </nav>
+
+            <!-- USUARIO LOGUEADO -->
+            <div class="sf-layout-auth">
+                @if (sesionActiva)
+                {
+                    <span class="sf-layout-user">
+                        Hola, @usuarioNombre
+                    </span>
+
+                    <a class="sf-layout-profile"
+                       asp-controller="Usuarios"
+                       asp-action="EditarPerfil">
+                        Editar perfil
+                    </a>
+
+                    <form asp-controller="Usuarios"
+                          asp-action="CerrarSesion"
+                          method="post"
+                          class="sf-layout-logout-form">
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit" class="sf-layout-logout-btn">
+                            Cerrar sesión
+                        </button>
+                    </form>
+                }
+            </div>
+
         </div>
     </header>
-    @{
-        var esHome = ViewContext.RouteData.Values["Controller"]?.ToString() == "Home"
-        && ViewContext.RouteData.Values["Action"]?.ToString() == "Index";
-    }
 
     @if (esHome)
     {
@@ -47,21 +98,19 @@
             </main>
         </div>
     }
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
     <footer>
         <div class="container">
-            &copy; 2026 - ServiFlow - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2026 - ServiFlow -
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/kanban.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

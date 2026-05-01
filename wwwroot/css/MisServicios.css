@@ -1,0 +1,276 @@
+﻿.ms-page {
+    min-height: 100vh;
+    padding: 38px 20px 50px;
+    color: white;
+}
+
+.ms-container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 30px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(6px);
+}
+
+.ms-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
+}
+
+    .ms-header h1 {
+        margin: 0 0 8px;
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #ffffff;
+        text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.22);
+    }
+
+    .ms-header p {
+        margin: 0;
+        color: #d3dde6;
+        font-size: 1rem;
+    }
+
+.ms-btn-crear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    padding: 13px 24px;
+    border-radius: 14px;
+    background: linear-gradient(90deg, #7b2cff, #b312b8);
+    color: white;
+    font-size: 1rem;
+    font-weight: 800;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.18);
+    transition: all 0.25s ease;
+}
+
+    .ms-btn-crear:hover {
+        transform: translateY(-2px);
+        color: white;
+        opacity: 0.96;
+    }
+
+.ms-table-wrap {
+    overflow-x: auto;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.ms-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+    .ms-table thead {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .ms-table th {
+        text-align: left;
+        padding: 18px 16px;
+        font-size: 1rem;
+        font-weight: 800;
+        color: #ffffff;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .ms-table td {
+        padding: 16px;
+        vertical-align: middle;
+        color: #ecf1f5;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .ms-table tbody tr {
+        transition: background 0.22s ease;
+    }
+
+        .ms-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+.ms-name {
+    font-weight: 700;
+    color: #ffffff;
+    min-width: 170px;
+}
+
+.ms-description {
+    min-width: 280px;
+    color: #d8e0e8;
+    line-height: 1.45;
+}
+
+.ms-badge {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #8bd8ff;
+    background: rgba(0, 194, 255, 0.14);
+    border: 1px solid rgba(127, 223, 255, 0.25);
+}
+
+.ms-actions-col {
+    width: 190px;
+}
+
+.ms-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.ms-inline-form {
+    display: inline;
+    margin: 0;
+}
+
+.ms-btn {
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: all 0.25s ease;
+    box-shadow: 0 0 7px rgba(255, 255, 255, 0.22);
+    min-width: 138px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.ms-btn-soft {
+    background: rgba(255, 0, 200, 0.10);
+    color: #ffffff;
+    border: 1px solid rgba(53, 14, 71, 0.12);
+}
+
+    .ms-btn-soft:hover {
+        transform: translateY(-2px);
+        color: white;
+        background: rgba(255, 255, 255, 0.14);
+    }
+
+.ms-btn-danger {
+    background: rgba(255, 77, 77, 0.12);
+    color: #ff9b9b;
+    border: 1px solid rgba(255, 77, 77, 0.25);
+}
+
+    .ms-btn-danger:hover {
+        transform: translateY(-2px);
+        color: white;
+        background: rgba(255, 255, 255, 0.14);
+        border-color: transparent;
+    }
+
+.ms-empty {
+    text-align: center;
+    padding: 55px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 18px;
+    border: 1px dashed rgba(255, 255, 255, 0.14);
+}
+
+    .ms-empty h3 {
+        margin-bottom: 10px;
+        color: #ffffff;
+        font-size: 1.5rem;
+    }
+
+    .ms-empty p {
+        color: #c8d6df;
+        margin-bottom: 22px;
+    }
+
+.ms-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.ms-modal {
+    width: 90%;
+    max-width: 420px;
+    background: #0f2230;
+    color: white;
+    border-radius: 18px;
+    padding: 28px;
+    text-align: center;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+    .ms-modal h3 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        font-size: 1.4rem;
+    }
+
+    .ms-modal p {
+        color: #d7e4eb;
+        margin-bottom: 20px;
+    }
+
+    .ms-modal button {
+        background: linear-gradient(90deg, #7b2cff, #b312b8);
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 700;
+    }
+
+        .ms-modal button:hover {
+            opacity: 0.95;
+        }
+
+@media (max-width: 900px) {
+    .ms-container {
+        padding: 22px;
+    }
+
+    .ms-header h1 {
+        font-size: 1.9rem;
+    }
+
+    .ms-actions {
+        gap: 8px;
+    }
+}
+
+@media (max-width: 768px) {
+    .ms-table th,
+    .ms-table td {
+        padding: 12px;
+    }
+
+    .ms-actions {
+        min-width: 150px;
+    }
+
+    .ms-btn {
+        width: 100%;
+    }
+}

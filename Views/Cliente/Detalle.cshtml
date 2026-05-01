@@ -1,0 +1,148 @@
+﻿@model ServiFlow.Models.ClienteEmprendimientoVM
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = Model.Nombre;
+}
+
+<link rel="stylesheet" href="~/css/DetalleEmprendimientoCliente.css" asp-append-version="true" />
+
+<div class="cliente-detalle-page">
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alerta alerta-ok">@TempData["Mensaje"]</div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alerta alerta-error">@TempData["Error"]</div>
+    }
+
+    <section class="cliente-hero">
+
+        <div class="cliente-hero-left">
+
+            <div class="cliente-logo-column">
+                <div class="cliente-logo">
+                    @if (!string.IsNullOrWhiteSpace(Model.LogoUrl))
+                    {
+                        <img src="@Model.LogoUrl" alt="@Model.Nombre" />
+                    }
+                    else
+                    {
+                        <span>@Model.Nombre.Substring(0, 1).ToUpper()</span>
+                    }
+                </div>
+
+                <div class="cliente-actions">
+                    <a class="btn-principal"
+                       asp-controller="Citas"
+                       asp-action="Reservar"
+                       asp-route-emprendimientoId="@Model.EmprendimientoId">
+                        Agendar cita
+                    </a>
+
+                    <a class="btn-secundario"
+                       asp-controller="Citas"
+                       asp-action="MisCitas"
+                       asp-route-emprendimientoId="@Model.EmprendimientoId">
+                        Ver mis citas
+                    </a>
+                </div>
+            </div>
+
+            <div class="cliente-info">
+                <h1>@Model.Nombre</h1>
+                <p class="especialidad">@Model.TipoServicio</p>
+                <p class="descripcion">@Model.Descripcion</p>
+
+                <div class="rating-display">
+                    <span class="stars">★★★★★</span>
+                    <span>
+                        @(Model.PromedioCalificacion > 0 ? Model.PromedioCalificacion.ToString("0.0") : "Sin calificación")
+                        (@Model.TotalCalificaciones reseña(s))
+                    </span>
+                </div>
+
+                <form asp-controller="Cliente" asp-action="Calificar" method="post" class="rating-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="emprendimientoId" value="@Model.EmprendimientoId" />
+
+                    <span>Tu calificación:</span>
+
+                    <div class="rating-buttons">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <button type="submit"
+                                    name="valor"
+                                    value="@i"
+                                    class="star-btn @(Model.MiCalificacion == i ? "active" : "")">
+                                ★
+                            </button>
+                        }
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="cliente-banner">
+            @if (!string.IsNullOrWhiteSpace(Model.BannerUrl))
+            {
+                <img src="@Model.BannerUrl" alt="@Model.Nombre" />
+            }
+            else
+            {
+                <div class="banner-placeholder">
+                    <span>+</span>
+                    <p>Imagen principal</p>
+                </div>
+            }
+        </div>
+
+    </section>
+
+    <section class="cliente-servicios">
+        <h2>Servicios Disponibles</h2>
+
+        @if (Model.Servicios.Any())
+        {
+            <div class="cliente-servicios-grid">
+                @foreach (var servicio in Model.Servicios)
+                {
+                    <article class="cliente-servicio-card">
+                        <div class="servicio-img">
+                            @if (!string.IsNullOrWhiteSpace(servicio.ImagenUrl))
+                            {
+                                <img src="@servicio.ImagenUrl" alt="@servicio.Nombre" />
+                            }
+                            else
+                            {
+                                <span>Sin imagen</span>
+                            }
+                        </div>
+
+                        <div class="servicio-content">
+                            <div>
+                                <h3>@servicio.Nombre</h3>
+                                <p>@servicio.Descripcion</p>
+                            </div>
+
+                            <strong>
+                                @(servicio.Precio.HasValue ? $"$ {servicio.Precio.Value:N0}" : "Consultar precio")
+                            </strong>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                Este emprendimiento aún no tiene servicios disponibles.
+            </div>
+        }
+    </section>
+
+</div>

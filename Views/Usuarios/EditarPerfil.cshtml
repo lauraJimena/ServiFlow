@@ -1,0 +1,125 @@
+﻿@model ServiFlow.ViewModels.EditarPerfilVM
+
+@{
+    ViewData["Title"] = "Editar perfil";
+}
+
+<link rel="stylesheet" href="~/css/EditarPerfil.css" asp-append-version="true" />
+
+<div class="perfil-container">
+    <div class="perfil-form">
+        <h2>Editar perfil</h2>
+
+        @if (TempData["Mensaje"] != null)
+        {
+            <div class="perfil-success">
+                @TempData["Mensaje"]
+            </div>
+        }
+
+        <form asp-action="EditarPerfil" method="post" autocomplete="off">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <div class="input-group-perfil">
+                <input asp-for="Nombre"
+                       class="input-custom"
+                       placeholder="Nombre"
+                       autocomplete="off" />
+                <span asp-validation-for="Nombre" class="perfil-error"></span>
+            </div>
+
+            <div class="input-group-perfil">
+                <input asp-for="Email"
+                       class="input-custom"
+                       placeholder="Correo electrónico"
+                       autocomplete="off" />
+                <span asp-validation-for="Email" class="perfil-error"></span>
+            </div>
+
+            <div class="input-group-perfil">
+                <input asp-for="Telefono"
+                       class="input-custom"
+                       placeholder="Teléfono"
+                       autocomplete="off" />
+                <span asp-validation-for="Telefono" class="perfil-error"></span>
+            </div>
+
+            <div class="password-toggle">
+                <label class="switch">
+                    <input asp-for="CambiarPassword"
+                           id="CambiarPassword"
+                           type="checkbox"
+                           autocomplete="off" />
+                    <span class="slider"></span>
+                </label>
+
+                <span class="switch-label">
+                    Deseo cambiar mi contraseña
+                </span>
+            </div>
+
+            <div id="passwordSection" class="password-section">
+                <div class="input-group-perfil">
+                    <input asp-for="PasswordActual"
+                           type="password"
+                           class="input-custom"
+                           placeholder="Contraseña actual"
+                           autocomplete="new-password"
+                           value="" />
+                    <span asp-validation-for="PasswordActual" class="perfil-error"></span>
+                </div>
+
+                <div class="input-group-perfil">
+                    <input asp-for="NuevaPassword"
+                           type="password"
+                           class="input-custom"
+                           placeholder="Nueva contraseña"
+                           autocomplete="new-password"
+                           value="" />
+                    <span asp-validation-for="NuevaPassword" class="perfil-error"></span>
+                </div>
+
+                <div class="input-group-perfil">
+                    <input asp-for="ConfirmarNuevaPassword"
+                           type="password"
+                           class="input-custom"
+                           placeholder="Confirmar nueva contraseña"
+                           autocomplete="new-password"
+                           value="" />
+                    <span asp-validation-for="ConfirmarNuevaPassword" class="perfil-error"></span>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="btn-guardar-perfil">
+                    Guardar cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        const check = document.getElementById("CambiarPassword");
+        const section = document.getElementById("passwordSection");
+
+        function togglePasswordSection() {
+            section.style.display = check.checked ? "block" : "none";
+        }
+
+        check.addEventListener("change", togglePasswordSection);
+        togglePasswordSection();
+
+        window.addEventListener("load", function () {
+            document.querySelectorAll("#passwordSection input").forEach(input => {
+                input.value = "";
+            });
+        });
+    </script>
+}

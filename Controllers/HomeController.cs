@@ -20,7 +20,7 @@ public class HomeController : Controller
 
         int totalItems = query.Count();
         int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
+            
         var emprendimientos = query
             .OrderBy(e => e.Id)
             .Skip((page - 1) * pageSize)

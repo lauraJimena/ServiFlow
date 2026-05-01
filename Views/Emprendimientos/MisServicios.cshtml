@@ -1,73 +1,82 @@
 ﻿@model IEnumerable<ServiFlow.Models.Emprendimiento>
 @using System.Linq
-<link rel="stylesheet" href="~/css/IndexGeneral.css" asp-append-version="true" />
 
 @{
     ViewData["Title"] = "Mis Servicios";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/MisServicios.css" asp-append-version="true" />
+}
 
-<section class="servicios-page">
-    <div class="servicios-container">
+<section class="ms-page">
+    <div class="ms-container">
 
-        <div class="servicios-header">
+        <div class="ms-header">
             <div>
                 <h1>Mis servicios</h1>
                 <p>Gestiona los emprendimientos y servicios publicados en ServiFlow.</p>
             </div>
 
-            <a asp-action="Create" class="btn-crear">
+            <a asp-action="Create" class="ms-btn-crear">
                 + Crear nuevo
             </a>
         </div>
 
         @if (Model != null && Model.Any())
         {
-            <div class="tabla-wrapper">
-                <table class="tabla-servicios">
+            <div class="ms-table-wrap">
+                <table class="ms-table">
                     <thead>
                         <tr>
                             <th>Nombre</th>
                             <th>Tipo</th>
                             <th>Descripción</th>
-                            <th class="acciones-col">Acciones</th>
+                            <th class="ms-actions-col">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td class="nombre-col">@item.Nombre</td>
+                                <td class="ms-name">@item.Nombre</td>
 
                                 <td>
-                                    <span class="badge-tipo">@item.TipoServicio</span>
+                                    <span class="ms-badge">@item.TipoServicio</span>
                                 </td>
 
-                                <td class="descripcion-col">
+                                <td class="ms-description">
                                     @item.Descripcion
                                 </td>
 
-                                <td class="acciones">
+                                <td class="ms-actions">
                                     <a asp-controller="Kanban"
                                        asp-action="Index"
                                        asp-route-emprendimientoId="@item.Id"
-                                       class="btn-accion editar">
+                                       class="ms-btn ms-btn-soft">
                                         Abrir Kanban
+                                    </a>
+
+                                    <a asp-controller="Emprendimientos"
+                                       asp-action="RankingClientes"
+                                       asp-route-emprendimientoId="@item.Id"
+                                       class="ms-btn ms-btn-soft">
+                                        Ranking clientes
                                     </a>
 
                                     <a asp-action="Edit"
                                        asp-route-id="@item.Id"
-                                       class="btn-accion editar">
+                                       class="ms-btn ms-btn-soft">
                                         Editar
                                     </a>
 
                                     <form asp-action="Delete"
                                           asp-route-id="@item.Id"
                                           method="post"
-                                          style="display:inline;">
+                                          class="ms-inline-form">
                                         @Html.AntiForgeryToken()
                                         <button type="submit"
-                                                class="btn-accion eliminar"
+                                                class="ms-btn ms-btn-danger"
                                                 onclick="return confirm('¿Seguro que deseas eliminar este emprendimiento?');">
                                             Eliminar
                                         </button>
@@ -81,10 +90,10 @@
         }
         else
         {
-            <div class="empty-state">
+            <div class="ms-empty">
                 <h3>No tienes servicios registrados</h3>
                 <p>Empieza creando tu primer emprendimiento o servicio.</p>
-                <a asp-action="Create" class="btn-crear">Crear nuevo</a>
+                <a asp-action="Create" class="ms-btn-crear">Crear nuevo</a>
             </div>
         }
     </div>
@@ -92,8 +101,8 @@
 
 @if (TempData["Mensaje"] != null)
 {
-    <div class="overlay" id="modalExito">
-        <div class="modal-success">
+    <div class="ms-overlay" id="modalExito">
+        <div class="ms-modal">
             <h3>Éxito</h3>
             <p>@TempData["Mensaje"]</p>
             <button type="button" onclick="cerrarModal()">Cerrar</button>
@@ -101,11 +110,13 @@
     </div>
 }
 
-<script>
-    function cerrarModal() {
-        const modal = document.getElementById('modalExito');
-        if (modal) {
-            modal.style.display = 'none';
+@section Scripts {
+    <script>
+        function cerrarModal() {
+            const modal = document.getElementById('modalExito');
+            if (modal) {
+                modal.style.display = 'none';
+            }
         }
-    }
-</script>
+    </script>
+}

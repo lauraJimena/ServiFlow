@@ -174,7 +174,7 @@ namespace ServiFlow.Controllers
         }
 
         [HttpGet]
-        public IActionResult MisCitas(int emprendimientoId, int page = 1)
+        public IActionResult MisCitas(int emprendimientoId, int page = 1, string orden = "cercana")
         {
             var usuarioIdString = HttpContext.Session.GetString("UsuarioId");
 
@@ -195,8 +195,15 @@ namespace ServiFlow.Controllers
             var query = _context.Citas
                 .Include(c => c.Servicio)
                 .Where(c => c.UsuarioId == usuarioId &&
-                            c.EmprendimientoId == emprendimientoId)
-                .OrderBy(c => c.Fecha);
+                            c.EmprendimientoId == emprendimientoId);
+
+            orden = (orden ?? "cercana").Trim().ToLower();
+
+            query = orden switch
+            {
+                "lejana" => query.OrderByDescending(c => c.Fecha),
+                _ => query.OrderBy(c => c.Fecha)
+            };
 
             int totalItems = query.Count();
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
@@ -223,7 +230,8 @@ namespace ServiFlow.Controllers
                 CurrentPage = page,
                 TotalPages = totalPages,
                 TotalItems = totalItems,
-                PageSize = pageSize
+                PageSize = pageSize,
+                Orden = orden
             };
 
             return View("~/Views/Cliente/MisCitas.cshtml", vm);

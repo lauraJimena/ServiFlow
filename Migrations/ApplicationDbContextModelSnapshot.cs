@@ -17,6 +17,33 @@ namespace ServiFlow.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
 
+            modelBuilder.Entity("ServiFlow.Models.Calificacion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("EmprendimientoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Valor")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmprendimientoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Calificaciones");
+                });
+
             modelBuilder.Entity("ServiFlow.Models.Cita", b =>
                 {
                     b.Property<int>("Id")
@@ -87,6 +114,9 @@ namespace ServiFlow.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("BannerUrl")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Descripcion")
                         .HasColumnType("TEXT");
 
@@ -94,6 +124,9 @@ namespace ServiFlow.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ImagenUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LogoUrl")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Nombre")
@@ -117,12 +150,21 @@ namespace ServiFlow.Migrations
                     b.Property<bool>("Activo")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("EmprendimientoId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("ImagenUrl")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("Precio")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -182,6 +224,9 @@ namespace ServiFlow.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Telefono")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("TipoUsuario")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -209,6 +254,25 @@ namespace ServiFlow.Migrations
                     b.ToTable("Tareas");
                 });
 
+            modelBuilder.Entity("ServiFlow.Models.Calificacion", b =>
+                {
+                    b.HasOne("ServiFlow.Models.Emprendimiento", "Emprendimiento")
+                        .WithMany()
+                        .HasForeignKey("EmprendimientoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ServiFlow.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Emprendimiento");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("ServiFlow.Models.Cita", b =>
                 {
                     b.HasOne("ServiFlow.Models.Emprendimiento", "Emprendimiento")
@@ -218,7 +282,7 @@ namespace ServiFlow.Migrations
                         .IsRequired();
 
                     b.HasOne("ServiFlow.Models.Servicio", "Servicio")
-                        .WithMany()
+                        .WithMany("Citas")
                         .HasForeignKey("ServicioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -245,7 +309,7 @@ namespace ServiFlow.Migrations
                         .IsRequired();
 
                     b.HasOne("ServiFlow.Models.Servicio", "Servicio")
-                        .WithMany()
+                        .WithMany("Disponibilidades")
                         .HasForeignKey("ServicioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -258,7 +322,7 @@ namespace ServiFlow.Migrations
             modelBuilder.Entity("ServiFlow.Models.Servicio", b =>
                 {
                     b.HasOne("ServiFlow.Models.Emprendimiento", "Emprendimiento")
-                        .WithMany()
+                        .WithMany("Servicios")
                         .HasForeignKey("EmprendimientoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -281,7 +345,16 @@ namespace ServiFlow.Migrations
                 {
                     b.Navigation("Disponibilidades");
 
+                    b.Navigation("Servicios");
+
                     b.Navigation("TareasKanban");
+                });
+
+            modelBuilder.Entity("ServiFlow.Models.Servicio", b =>
+                {
+                    b.Navigation("Citas");
+
+                    b.Navigation("Disponibilidades");
                 });
 #pragma warning restore 612, 618
         }
