@@ -1,26 +1,17 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
-
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
     body.layout-shell {
@@ -33,6 +24,14 @@ body {
     flex: 1;
 }
 
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
 /* HEADER */
 .sf-header {
     position: sticky;
@@ -43,9 +42,9 @@ body {
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 2px 12px rgba(108, 99, 255, 0.5);
-    
 }
 
+/* Mantiene dimensiones originales */
 .sf-navbar {
     max-width: 1400px;
     margin: 0 auto;
@@ -53,25 +52,45 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 22px;
+    min-height: 72px;
 }
 
+/* LOGO */
 .sf-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     text-decoration: none;
     font-size: 28px;
     font-weight: 800;
     letter-spacing: -0.8px;
     color: #ffffff;
     transition: 0.25s ease;
+    text-shadow: 0 0 6px rgba(108, 99, 255, 0.7), 0 0 12px rgba(108, 99, 255, 0.4);
+    white-space: nowrap;
+    flex: 0 0 auto;
 }
 
     .sf-brand:hover {
         color: #dff6ff;
+        text-decoration: none;
     }
 
+.sf-logo {
+    height: 52px;
+    width: auto;
+    filter: drop-shadow(0 0 4px rgba(108, 99, 255, 0.6)) drop-shadow(0 0 10px rgba(108, 99, 255, 0.3));
+}
+
+/* MENÚ */
 .sf-menu {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 24px;
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .sf-link {
@@ -79,12 +98,14 @@ body {
     text-decoration: none;
     font-size: 16px;
     font-weight: 600;
-    color: rgba(255,255,255,0.88);
+    color: rgba(255, 255, 255, 0.88);
     transition: color 0.25s ease;
+    white-space: nowrap;
 }
 
     .sf-link:hover {
         color: #ffffff;
+        text-decoration: none;
     }
 
     .sf-link::after {
@@ -103,49 +124,157 @@ body {
         width: 100%;
     }
 
+/* USUARIO - SIEMPRE EN UNA FILA */
+.sf-layout-auth {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    flex: 0 0 auto !important;
+    min-width: max-content !important;
+    max-width: none !important;
+}
+
+.sf-layout-user {
+    display: inline-flex !important;
+    align-items: center !important;
+    color: white !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* LINK EDITAR PERFIL */
+.sf-layout-profile {
+    display: inline-flex !important;
+    align-items: center !important;
+    color: white !important;
+    text-decoration: none !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+    .sf-layout-profile:hover,
+    .sf-layout-profile:focus,
+    .sf-layout-profile:active,
+    .sf-layout-profile:visited {
+        color: white !important;
+        text-decoration: underline !important;
+    }
+
+/* FORM CERRAR SESIÓN */
+.sf-layout-logout-form {
+    display: inline-flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    min-width: auto !important;
+    max-width: none !important;
+}
+
+/* BOTÓN CERRAR SESIÓN */
+.sf-layout-logout-btn {
+    appearance: none;
+    -webkit-appearance: none;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(90deg, #4a148c, #880e4f) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 10px 20px !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5) !important;
+    transition: all 0.25s ease !important;
+    width: auto !important;
+    min-width: auto !important;
+    max-width: none !important;
+    height: auto !important;
+}
+
+    .sf-layout-logout-btn:hover {
+        transform: translateY(-3px);
+        opacity: 0.95;
+        color: white !important;
+    }
+
+    .sf-layout-logout-btn:focus {
+        outline: none !important;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.85), 0 0 0 5px rgba(136, 14, 79, 0.55) !important;
+    }
+
+    .sf-layout-logout-btn:active {
+        transform: translateY(-1px);
+    }
+
 /* FOOTER */
 footer {
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     margin-top: 30px;
     padding: 28px 0;
     text-align: center;
-    color: rgba(255,255,255,0.85);
+    color: rgba(255, 255, 255, 0.85);
     background: rgba(7, 28, 39, 0.82);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-    footer .container a {   
+
+    footer .container a {
         color: white;
-        text-decoration:none;
+        text-decoration: none;
     }
-@media (max-width: 768px) {
+
+        footer .container a:hover {
+            text-decoration: underline;
+        }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
     .sf-navbar {
-        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
         gap: 12px;
         padding: 14px 18px;
     }
 
     .sf-menu {
+        order: 2;
+        flex: 1 1 100%;
         gap: 18px;
         flex-wrap: wrap;
-        justify-content: center;
     }
 
+    .sf-layout-auth {
+        order: 3;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        min-width: 0 !important;
+    }
+}
+
+@media (max-width: 768px) {
     .sf-brand {
         font-size: 24px;
     }
-}
-.sf-brand {
-    display: flex;
-    align-items: center;
-    gap: 8px; /* espacio entre logo y texto */
-    text-decoration: none;
-    text-shadow: 0 0 6px rgba(108, 99, 255, 0.7), 0 0 12px rgba(108, 99, 255, 0.4);
-}
 
-.sf-logo {
-    height: 52px;
-    width: auto;
-    filter: drop-shadow(0 0 4px rgba(108, 99, 255, 0.6)) drop-shadow(0 0 10px rgba(108, 99, 255, 0.3));
+    .sf-logo {
+        height: 52px;
+    }
 }

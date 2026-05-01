@@ -1,0 +1,448 @@
+﻿html,
+body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #070014;
+    color: white;
+}
+
+.cliente-detalle-page {
+    width: 100%;
+    min-height: 100vh;
+    padding: 34px clamp(18px, 5vw, 75px) 70px;
+    background: #070014;
+}
+* {
+    box-sizing: border-box;
+}
+
+main,
+.container,
+.pb-3 {
+    width: 100%;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+
+
+/* ALERTAS */
+.alerta {
+    width: min(100%, 1340px);
+    margin: 0 auto 18px;
+    padding: 14px 20px;
+    border-radius: 14px;
+    font-weight: 600;
+}
+
+.alerta-ok {
+    background: rgba(34, 197, 94, 0.18);
+    border: 1px solid rgba(34, 197, 94, 0.55);
+}
+
+.alerta-error {
+    background: rgba(239, 68, 68, 0.18);
+    border: 1px solid rgba(239, 68, 68, 0.55);
+}
+
+/* HERO PRINCIPAL */
+.cliente-hero {
+    width: min(100%, 1340px);
+    margin: 0 auto;
+    min-height: 365px;
+    padding: 24px 26px;
+    display: grid;
+    grid-template-columns: minmax(500px, 0.95fr) minmax(500px, 1.05fr);
+    gap: 28px;
+    align-items: stretch;
+    border: 2px solid rgba(190, 44, 255, 0.95);
+    border-radius: 24px;
+    background: rgba(10, 0, 34, 0.72);
+    box-shadow: 0 0 18px rgba(190, 44, 255, 0.35), inset 0 0 35px rgba(120, 0, 180, 0.18);
+}
+
+/* IZQUIERDA: LOGO + BOTONES + INFO */
+.cliente-hero-left {
+    display: grid;
+    grid-template-columns: 185px minmax(0, 1fr);
+    gap: 28px;
+    align-items: center;
+}
+
+/* COLUMNA SOLO DEL LOGO Y BOTONES */
+.cliente-logo-column {
+    width: 185px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+/* LOGO */
+.cliente-logo {
+    width: 185px;
+    height: 185px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    font-size: 70px;
+    font-weight: 900;
+}
+
+    .cliente-logo img,
+    .servicio-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+/* BOTONES: DEBAJO DEL LOGO */
+.cliente-actions {
+    width: 135px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    align-items: stretch;
+}
+
+.btn-principal,
+.btn-secundario {
+    width: 100%;
+    min-width: 0;
+    padding: 10px 10px;
+    border-radius: 9px;
+    text-decoration: none;
+    color: white;
+    font-weight: 800;
+    font-size: 13px;
+    line-height: 1.1;
+    text-align: center;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.btn-principal {
+    background: linear-gradient(100deg, #7c22ff, #d90fd1);
+    box-shadow: 0 0 18px rgba(218, 15, 209, 0.48);
+}
+
+.btn-secundario {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+    .btn-principal:hover,
+    .btn-secundario:hover {
+        transform: translateY(-2px);
+    }
+
+.btn-principal:hover {
+    box-shadow: 0 0 24px rgba(218, 15, 209, 0.68);
+}
+
+.btn-secundario:hover {
+    background: rgba(255, 255, 255, 0.13);
+}
+
+/* INFO: SIEMPRE AL LADO DEL LOGO */
+.cliente-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+    .cliente-info h1 {
+        font-size: clamp(36px, 4vw, 48px);
+        font-weight: 800;
+        line-height: 1.05;
+        margin: 0 0 12px;
+    }
+
+.especialidad {
+    font-size: 21px;
+    margin: 0 0 8px;
+    font-weight: 600;
+}
+
+.descripcion {
+    font-size: 16px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+}
+
+/* CALIFICACIÓN */
+.rating-display {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: 15px;
+}
+
+.stars {
+    font-size: 22px;
+    letter-spacing: 3px;
+    line-height: 1;
+    color: #d126ff;
+}
+
+.rating-form {
+    margin-top: 12px;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 15px;
+}
+
+.rating-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.star-btn {
+    width: 54px;
+    height: 54px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(12, 0, 32, 0.72);
+    color: rgba(255, 255, 255, 0.38);
+    font-size: 25px;
+    cursor: pointer;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.08), 0 0 8px rgba(255, 255, 255, 0.12);
+    transition: color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+    .star-btn:hover,
+    .star-btn.active {
+        color: #d126ff;
+        border-color: rgba(209, 38, 255, 0.75);
+        box-shadow: 0 0 14px rgba(209, 38, 255, 0.42);
+        transform: translateY(-1px);
+    }
+
+/* BANNER DERECHO */
+.cliente-banner {
+    width: 100%;
+    height: 315px;
+    max-height: 315px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .cliente-banner img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+        display: block;
+    }
+
+.banner-placeholder {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* SERVICIOS */
+.cliente-servicios {
+    width: min(100%, 1340px);
+    margin: 20px auto 0;
+}
+
+    .cliente-servicios h2 {
+        margin: 0 0 14px;
+        font-size: clamp(28px, 3vw, 34px);
+        line-height: 1.1;
+        font-weight: 800;
+    }
+
+.cliente-servicios-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.cliente-servicio-card {
+    min-height: 350px;
+    padding: 20px;
+    border: 1.8px solid rgba(190, 44, 255, 0.72);
+    border-radius: 17px;
+    background: rgba(10, 0, 34, 0.72);
+    box-shadow: inset 0 0 22px rgba(123, 0, 255, 0.16), 0 0 14px rgba(185, 0, 255, 0.13);
+    display: flex;
+    flex-direction: column;
+}
+
+.servicio-img {
+    width: 100%;
+    height: 150px;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    display: grid;
+    place-items: center;
+}
+
+.servicio-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+    .servicio-content h3 {
+        margin: 0 0 8px;
+        font-size: 25px;
+        font-weight: 800;
+    }
+
+    .servicio-content p {
+        margin: 0;
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .servicio-content strong {
+        margin-top: 16px;
+        font-size: 21px;
+        font-weight: 800;
+        color: #bf4cff;
+    }
+
+.empty-state {
+    padding: 24px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* TABLET */
+@media screen and (max-width: 1180px) {
+    .cliente-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .cliente-banner {
+        height: 280px;
+        max-height: 280px;
+    }
+
+    .cliente-servicios-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* CELULAR */
+@media screen and (max-width: 760px) {
+    .cliente-detalle-page {
+        padding: 22px 14px 50px;
+    }
+
+    .cliente-hero {
+        padding: 20px;
+    }
+
+    .cliente-hero-left {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+        row-gap: 20px;
+    }
+
+    .cliente-logo-column {
+        width: 165px;
+    }
+
+    .cliente-logo {
+        width: 165px;
+        height: 165px;
+    }
+
+    .cliente-actions {
+        width: 135px;
+    }
+
+    .cliente-info {
+        align-items: center;
+    }
+
+    .rating-display,
+    .rating-form {
+        align-items: center;
+        justify-content: center;
+    }
+
+    .rating-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .star-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 23px;
+    }
+
+    .cliente-banner {
+        height: 230px;
+        max-height: 230px;
+    }
+
+    .cliente-servicios-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* CELULAR PEQUEÑO */
+@media screen and (max-width: 420px) {
+    .cliente-info h1 {
+        font-size: 31px;
+    }
+
+    .especialidad,
+    .servicio-content p {
+        font-size: 16px;
+    }
+
+    .stars {
+        font-size: 21px;
+        letter-spacing: 2px;
+    }
+
+    .star-btn {
+        width: 43px;
+        height: 43px;
+        font-size: 21px;
+    }
+
+    .cliente-actions {
+        width: 130px;
+    }
+
+    .btn-principal,
+    .btn-secundario {
+        font-size: 12.5px;
+        padding: 10px 8px;
+    }
+
+    .cliente-servicio-card {
+        padding: 18px;
+    }
+}
+    

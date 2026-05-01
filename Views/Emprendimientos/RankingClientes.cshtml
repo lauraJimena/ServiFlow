@@ -1,0 +1,373 @@
+﻿@model ServiFlow.ViewModels.RankingClientesVM
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Ranking clientes";
+
+    var primero = Model.ClientesTop?.Count > 0 ? Model.ClientesTop[0] : null;
+    var segundo = Model.ClientesTop?.Count > 1 ? Model.ClientesTop[1] : null;
+    var tercero = Model.ClientesTop?.Count > 2 ? Model.ClientesTop[2] : null;
+
+    var hayBusqueda = !string.IsNullOrWhiteSpace(Model.SearchTerm);
+}
+
+<link rel="stylesheet" href="~/css/RankingClientes.css" asp-append-version="true" />
+
+<div class="ranking-scene">
+    <div class="ranking-shell">
+
+        <section class="ranking-left-panel">
+            <div class="ranking-brand">
+                <h1>🏆ServiFlow</h1>
+            </div>
+
+            <form class="ranking-search-form"
+                  asp-action="RankingClientes"
+                  asp-controller="Emprendimientos"
+                  method="get"
+                  id="rankingSearchForm">
+
+                <input type="hidden" name="emprendimientoId" value="@Model.EmprendimientoId" />
+                <input type="hidden" name="page" value="1" />
+
+                <div class="ranking-search-box">
+                    <select name="searchBy" class="ranking-search-select" id="rankingSearchBy">
+                        <option value="nombre" selected="@(Model.SearchBy == "nombre")">Nombre</option>
+                        <option value="correo" selected="@(Model.SearchBy == "correo")">Correo</option>
+                        <option value="telefono" selected="@(Model.SearchBy == "telefono")">Teléfono</option>
+                    </select>
+
+                    <input type="text"
+                           name="searchTerm"
+                           value="@Model.SearchTerm"
+                           class="ranking-search-input"
+                           id="rankingSearchInput"
+                           autocomplete="off"
+                           placeholder="Buscar cliente..." />
+
+                    @if (hayBusqueda)
+                    {
+                        <a class="ranking-search-clear"
+                           asp-action="RankingClientes"
+                           asp-controller="Emprendimientos"
+                           asp-route-emprendimientoId="@Model.EmprendimientoId"
+                           asp-route-page="1">
+                            ×
+                        </a>
+                    }
+                </div>
+            </form>
+
+            @if (Model.ClientesPaginados?.Any() == true)
+            {
+                <div class="ranking-list">
+                    @foreach (var item in Model.ClientesPaginados)
+                    {
+                        <button type="button"
+                                class="ranking-row-item ranking-client-trigger"
+                                data-nombre="@item.NombreCliente"
+                                data-email="@item.EmailCliente"
+                                data-telefono="@(string.IsNullOrWhiteSpace(item.TelefonoCliente) ? "Sin teléfono registrado" : item.TelefonoCliente)"
+                                data-total="@item.TotalCitas">
+                            <div class="ranking-row-left">
+                                <div class="ranking-number">@item.PosicionRanking</div>
+
+                                <div class="ranking-avatar-mini">
+                                    <div class="avatar-head"></div>
+                                    <div class="avatar-body"></div>
+                                </div>
+
+                                <div class="ranking-client-name">@item.NombreCliente</div>
+                            </div>
+
+                            <div class="ranking-client-total">@item.TotalCitas citas</div>
+                        </button>
+                    }
+                </div>
+
+                @if (Model.TotalPages > 1)
+                {
+                    <nav class="ranking-pagination">
+                        @if (Model.CurrentPage > 1)
+                        {
+                            <a class="page-link"
+                               asp-action="RankingClientes"
+                               asp-controller="Emprendimientos"
+                               asp-route-emprendimientoId="@Model.EmprendimientoId"
+                               asp-route-page="@(Model.CurrentPage - 1)"
+                               asp-route-searchTerm="@Model.SearchTerm"
+                               asp-route-searchBy="@Model.SearchBy">
+                                ‹
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="page-disabled">‹</span>
+                        }
+
+                        @{
+                            int startPage = Math.Max(1, Model.CurrentPage - 1);
+                            int endPage = Math.Min(Model.TotalPages, Model.CurrentPage + 1);
+
+                            if (Model.CurrentPage == 1)
+                            {
+                                endPage = Math.Min(Model.TotalPages, 3);
+                            }
+                            else if (Model.CurrentPage == Model.TotalPages)
+                            {
+                                startPage = Math.Max(1, Model.TotalPages - 2);
+                            }
+                        }
+
+                        @if (startPage > 1)
+                        {
+                            <a class="page-number"
+                               asp-action="RankingClientes"
+                               asp-controller="Emprendimientos"
+                               asp-route-emprendimientoId="@Model.EmprendimientoId"
+                               asp-route-page="1"
+                               asp-route-searchTerm="@Model.SearchTerm"
+                               asp-route-searchBy="@Model.SearchBy">
+                                1
+                            </a>
+
+                            @if (startPage > 2)
+                            {
+                                <span class="page-disabled">...</span>
+                            }
+                        }
+
+                        @for (int i = startPage; i <= endPage; i++)
+                        {
+                            <a class="page-number @(i == Model.CurrentPage ? "active" : "")"
+                               asp-action="RankingClientes"
+                               asp-controller="Emprendimientos"
+                               asp-route-emprendimientoId="@Model.EmprendimientoId"
+                               asp-route-page="@i"
+                               asp-route-searchTerm="@Model.SearchTerm"
+                               asp-route-searchBy="@Model.SearchBy">
+                                @i
+                            </a>
+                        }
+
+                        @if (endPage < Model.TotalPages)
+                        {
+                            @if (endPage < Model.TotalPages - 1)
+                            {
+                                <span class="page-disabled">...</span>
+                            }
+
+                            <a class="page-number"
+                               asp-action="RankingClientes"
+                               asp-controller="Emprendimientos"
+                               asp-route-emprendimientoId="@Model.EmprendimientoId"
+                               asp-route-page="@Model.TotalPages"
+                               asp-route-searchTerm="@Model.SearchTerm"
+                               asp-route-searchBy="@Model.SearchBy">
+                                @Model.TotalPages
+                            </a>
+                        }
+
+                        @if (Model.CurrentPage < Model.TotalPages)
+                        {
+                            <a class="page-link"
+                               asp-action="RankingClientes"
+                               asp-controller="Emprendimientos"
+                               asp-route-emprendimientoId="@Model.EmprendimientoId"
+                               asp-route-page="@(Model.CurrentPage + 1)"
+                               asp-route-searchTerm="@Model.SearchTerm"
+                               asp-route-searchBy="@Model.SearchBy">
+                                ›
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="page-disabled">›</span>
+                        }
+                    </nav>
+                }
+            }
+            else if (hayBusqueda)
+            {
+                <div class="ranking-empty ranking-search-empty">
+                    <div class="empty-icon">🔎</div>
+                    <h3>Sin coincidencias</h3>
+                    <p>No encontramos clientes con ese filtro.</p>
+                </div>
+            }
+            else
+            {
+                <div class="ranking-empty">
+                    <div class="empty-icon">🏆</div>
+                    <h3>Aún no hay ranking</h3>
+                    <p>Este emprendimiento todavía no tiene citas registradas.</p>
+                </div>
+            }
+        </section>
+
+        <section class="ranking-right-panel">
+            <div class="top-players">
+
+                @if (segundo != null)
+                {
+                    <div class="top-player second">
+                        <div class="top-rank">2°</div>
+
+                        <div class="top-avatar avatar-md">
+                            <div class="avatar-head"></div>
+                            <div class="avatar-body"></div>
+                        </div>
+
+                        <div class="top-name">@segundo.NombreCliente</div>
+                        <div class="top-count">@segundo.TotalCitas citas</div>
+                    </div>
+                }
+
+                @if (primero != null)
+                {
+                    <div class="top-player first">
+                        <div class="top-rank">1°</div>
+                        <div class="top-crown gold"></div>
+
+                        <div class="top-avatar avatar-lg">
+                            <div class="avatar-head"></div>
+                            <div class="avatar-body"></div>
+                        </div>
+
+                        <div class="top-name">@primero.NombreCliente</div>
+                        <div class="top-count">@primero.TotalCitas citas</div>
+                    </div>
+                }
+
+                @if (tercero != null)
+                {
+                    <div class="top-player third">
+                        <div class="top-rank">3°</div>
+
+                        <div class="top-avatar avatar-md">
+                            <div class="avatar-head"></div>
+                            <div class="avatar-body"></div>
+                        </div>
+
+                        <div class="top-name">@tercero.NombreCliente</div>
+                        <div class="top-count">@tercero.TotalCitas citas</div>
+                    </div>
+                }
+
+            </div>
+
+            <div class="podium-wrap">
+                <div class="podium">
+                    <div class="podium-step step-2"><span>2</span></div>
+                    <div class="podium-step step-1"><span>1</span></div>
+                    <div class="podium-step step-3"><span>3</span></div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+<div id="clientePopup" class="cliente-popup-overlay">
+    <div class="cliente-popup-box">
+        <button type="button" class="cliente-popup-close" id="cerrarClientePopup">×</button>
+
+        <div class="cliente-popup-avatar">
+            <div class="avatar-head"></div>
+            <div class="avatar-body"></div>
+        </div>
+
+        <h2 id="popupNombre">Cliente</h2>
+
+        <div class="cliente-popup-info">
+            <div class="cliente-info-row">
+                <span>Correo</span>
+                <strong id="popupEmail">-</strong>
+            </div>
+
+            <div class="cliente-info-row">
+                <span>Teléfono</span>
+                <strong id="popupTelefono">-</strong>
+            </div>
+
+            <div class="cliente-info-row">
+                <span>Total de citas</span>
+                <strong id="popupTotal">0</strong>
+            </div>
+        </div>
+
+        <button type="button" class="cliente-popup-ok" id="okClientePopup">OK</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const popup = document.getElementById("clientePopup");
+        const cerrar = document.getElementById("cerrarClientePopup");
+        const ok = document.getElementById("okClientePopup");
+
+        const popupNombre = document.getElementById("popupNombre");
+        const popupEmail = document.getElementById("popupEmail");
+        const popupTelefono = document.getElementById("popupTelefono");
+        const popupTotal = document.getElementById("popupTotal");
+
+        document.querySelectorAll(".ranking-client-trigger").forEach(item => {
+            item.addEventListener("click", () => {
+                popupNombre.textContent = item.dataset.nombre || "Cliente";
+                popupEmail.textContent = item.dataset.email || "Sin correo";
+                popupTelefono.textContent = item.dataset.telefono || "Sin teléfono registrado";
+                popupTotal.textContent = `${item.dataset.total || "0"} cita(s)`;
+
+                popup.classList.add("show");
+            });
+        });
+
+        function cerrarPopupCliente() {
+            popup.classList.remove("show");
+        }
+
+        if (cerrar) {
+            cerrar.addEventListener("click", cerrarPopupCliente);
+        }
+
+        if (ok) {
+            ok.addEventListener("click", cerrarPopupCliente);
+        }
+
+        if (popup) {
+            popup.addEventListener("click", (e) => {
+                if (e.target === popup) {
+                    cerrarPopupCliente();
+                }
+            });
+        }
+
+        const searchForm = document.getElementById("rankingSearchForm");
+        const searchInput = document.getElementById("rankingSearchInput");
+        const searchBy = document.getElementById("rankingSearchBy");
+
+        let searchTimer;
+
+        function enviarBusquedaConEspera() {
+            clearTimeout(searchTimer);
+
+            searchTimer = setTimeout(() => {
+                if (searchForm) {
+                    searchForm.submit();
+                }
+            }, 420);
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener("input", enviarBusquedaConEspera);
+        }
+
+        if (searchBy) {
+            searchBy.addEventListener("change", () => {
+                if (searchForm) {
+                    searchForm.submit();
+                }
+            });
+        }
+    </script>
+}
