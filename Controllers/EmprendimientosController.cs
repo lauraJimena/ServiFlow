@@ -66,6 +66,17 @@ namespace ServiFlow.Controllers
             if (!ModelState.IsValid)
                 return View(emprendimiento);
 
+            // 🔥 ESTA ES LA CLAVE
+            var usuarioIdString = HttpContext.Session.GetString("UsuarioId");
+
+            if (string.IsNullOrEmpty(usuarioIdString) || !int.TryParse(usuarioIdString, out int usuarioId))
+            {
+                TempData["Error"] = "Sesión expirada";
+                return RedirectToAction("Login", "Usuarios");
+            }
+
+            emprendimiento.UsuarioId = usuarioId;
+
             emprendimiento.EsPropio = true;
 
             if (ImagenArchivo != null && ImagenArchivo.Length > 0)
@@ -76,11 +87,8 @@ namespace ServiFlow.Controllers
             _context.Emprendimientos.Add(emprendimiento);
             _context.SaveChanges();
 
-            TempData["Mensaje"] = "Emprendimiento creado con éxito. Ahora personaliza tu página.";
-
             return RedirectToAction("Personalizar", new { id = emprendimiento.Id });
         }
-
         [HttpGet]
         public IActionResult Personalizar(int id)
         {

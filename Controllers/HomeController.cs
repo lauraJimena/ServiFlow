@@ -1,6 +1,7 @@
 using ServiFlow.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ServiFlow.Models;
 
 public class HomeController : Controller
 {
@@ -31,5 +32,29 @@ public class HomeController : Controller
         ViewBag.TotalPages = totalPages;
 
         return View(emprendimientos);
+    }
+    public IActionResult TestRelacion()
+    {
+        var data = _context.Emprendimientos
+            .Include(e => e.Usuario)
+            .ToList();
+
+        var resultado = "";
+
+        foreach (var e in data)
+        {
+            resultado += "==========\n";
+            resultado += "Emprendimiento: " + e.Nombre + "\n";
+            resultado += "UsuarioId: " + e.UsuarioId + "\n";
+            resultado += "Emprendedor: " + (e.Usuario?.Nombre ?? "NULL") + "\n";
+            resultado += "Teléfono: " + (e.Usuario?.Telefono ?? "NULL") + "\n\n";
+        }
+
+        if (!data.Any())
+        {
+            resultado = "No hay emprendimientos registrados.";
+        }
+
+        return Content(resultado, "text/plain");
     }
 }

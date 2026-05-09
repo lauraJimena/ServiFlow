@@ -3,17 +3,21 @@ using Microsoft.EntityFrameworkCore;
 using ServiFlow.Data;
 using ServiFlow.Models;
 using ServiFlow.ViewModels;
+using ServiFlow.Services;
 
 namespace ServiFlow.Controllers
 {
     public class CitasController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly WhatsAppService _whatsApp;
+
         private const int DuracionSlotMinutos = 30;
 
-        public CitasController(ApplicationDbContext context)
+        public CitasController(ApplicationDbContext context, WhatsAppService whatsApp)
         {
             _context = context;
+            _whatsApp = whatsApp;
         }
 
         [HttpGet]
@@ -104,11 +108,16 @@ namespace ServiFlow.Controllers
                 return RedirectToAction("Login", "Usuarios");
             }
 
-            var emprendimiento = _context.Emprendimientos.FirstOrDefault(e => e.Id == vm.EmprendimientoId);
+            var emprendimiento = _context.Emprendimientos
+                .Include(e => e.Usuario)
+                .FirstOrDefault(e => e.Id == vm.EmprendimientoId);
+
             if (emprendimiento == null)
                 return NotFound();
 
-            var servicio = _context.Servicios.FirstOrDefault(s => s.Id == vm.ServicioId && s.EmprendimientoId == vm.EmprendimientoId);
+            var servicio = _context.Servicios
+                .FirstOrDefault(s => s.Id == vm.ServicioId && s.EmprendimientoId == vm.EmprendimientoId);
+
             if (servicio == null)
                 return NotFound();
 
@@ -168,6 +177,45 @@ namespace ServiFlow.Controllers
 
             _context.Citas.Add(cita);
             _context.SaveChanges();
+
+            var citaCompleta = _context.Citas
+                .Include(c => c.Usuario)
+                .Include(c => c.Servicio)
+                .Include(c => c.Emprendimiento)
+                    .ThenInclude(e => e.Usuario)
+                .FirstOrDefault(c => c.Id == cita.Id);
+
+            var telefonoCliente = citaCompleta?.Usuario?.Telefono;
+            var telefonoEmprendedor = citaCompleta?.Emprendimiento?.Usuario?.Telefono;
+
+            if (!string.IsNullOrWhiteSpace(telefonoCliente))
+            {
+                string mensajeCliente = $@"
+📅 *Cita confirmada*
+🏢 {citaCompleta?.Emprendimiento?.Nombre}
+🧰 Servicio: {citaCompleta?.Servicio?.Nombre}
+📆 Fecha: {citaCompleta?.Fecha:dd/MM/yyyy}
+⏰ Hora: {citaCompleta?.Fecha:hh:mm tt}
+Estado: Pendiente
+";
+
+                _whatsApp.EnviarMensaje(telefonoCliente, mensajeCliente);
+            }
+
+            if (!string.IsNullOrWhiteSpace(telefonoEmprendedor))
+            {
+                string mensajeEmprendedor = $@"
+📢 *Nueva cita agendada*
+🏢 {citaCompleta?.Emprendimiento?.Nombre}
+👤 Cliente: {citaCompleta?.Usuario?.Nombre}
+📱 Teléfono cliente: {citaCompleta?.Usuario?.Telefono}
+🧰 Servicio: {citaCompleta?.Servicio?.Nombre}
+📆 Fecha: {citaCompleta?.Fecha:dd/MM/yyyy}
+⏰ Hora: {citaCompleta?.Fecha:hh:mm tt}
+";
+
+                _whatsApp.EnviarMensaje(telefonoEmprendedor, mensajeEmprendedor);
+            }
 
             TempData["Success"] = "Tu cita fue agendada correctamente.";
             return RedirectToAction("Reservar", new { emprendimientoId = vm.EmprendimientoId });
