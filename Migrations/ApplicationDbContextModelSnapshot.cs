@@ -136,7 +136,12 @@ namespace ServiFlow.Migrations
                     b.Property<string>("TipoServicio")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("UsuarioId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Emprendimientos");
                 });
@@ -317,6 +322,15 @@ namespace ServiFlow.Migrations
                     b.Navigation("Emprendimiento");
 
                     b.Navigation("Servicio");
+                });
+
+            modelBuilder.Entity("ServiFlow.Models.Emprendimiento", b =>
+                {
+                    b.HasOne("ServiFlow.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("ServiFlow.Models.Servicio", b =>

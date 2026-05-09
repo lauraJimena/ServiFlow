@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ServiFlow.Data;
+using ServiFlow.Services;
 
 SQLitePCL.Batteries.Init();
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
+builder.Services.AddScoped<WhatsAppService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("ConexionSQLite")));
 
