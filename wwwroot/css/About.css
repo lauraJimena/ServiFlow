@@ -1,0 +1,130 @@
+﻿/* CONTENEDOR GENERAL */
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 60px;
+}
+
+/* HERO */
+.about-hero {
+    padding: 40px 0 10px;
+}
+
+    .about-hero h1 {
+        font-size: 64px;
+        margin: 0;
+        font-weight: 900;
+        color: #ffffff;
+        text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+    }
+
+.about-subtitle {
+    margin-top: 15px;
+    font-size: 20px;
+    color: #cbd5f5;
+}
+
+/* CONTENIDO */
+.about-content {
+    padding-bottom: 80px;
+}
+
+/* TARJETAS */
+.about-card {
+    background: rgba(30, 41, 59, 0.6); /* #1E293B */
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 30px;
+    margin-bottom: 25px;
+    backdrop-filter: blur(10px);
+    transition: all 0.25s ease;
+}
+
+    .about-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 0 20px rgba(109, 40, 217, 0.4); /* #6D28D9 */
+    }
+
+    .about-card h2 {
+        margin-top: 0;
+        color: #a78bfa;
+    }
+
+    .about-card p {
+        color: #e2e8f0;
+        line-height: 1.6;
+    }
+
+/* VALORES */
+.about-valores {
+    margin-top: 50px;
+}
+
+    .about-valores h2 {
+        margin-bottom: 25px;
+        color: #c4b5fd;
+    }
+
+/* GRID VALORES */
+.valores-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.valor-item {
+    background: linear-gradient(135deg, #584FC4, #6D28D9);
+    padding: 25px;
+    border-radius: 16px;
+    text-align: center;
+    transition: all 0.25s ease;
+}
+
+    .valor-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(109, 40, 217, 0.6);
+    }
+
+    .valor-item span {
+        font-size: 28px;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .valor-item h3 {
+        margin: 10px 0;
+        color: white;
+    }
+
+    .valor-item p {
+        font-size: 14px;
+        color: #e0e7ff;
+    }
+.icono-titulo {
+    width: 45px;
+    height: 45px;
+    margin-right: 8px;
+    vertical-align: middle;
+    filter: drop-shadow(0 0 4px rgba(108, 99, 255, 0.6)) drop-shadow(0 0 10px rgba(108, 99, 255, 0.3));
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .valores-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .about-container {
+        padding: 0 20px;
+    }
+
+    .about-hero h1 {
+        font-size: 42px;
+    }
+}
+
+@media (max-width: 500px) {
+    .valores-grid {
+        grid-template-columns: 1fr;
+    }
+}

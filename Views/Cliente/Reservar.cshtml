@@ -8,8 +8,14 @@
 
 <div class="agenda-wrap">
     <div class="agenda-card">
-        <h1>Agenda tu cita</h1>
-        <p class="subtitulo">@Model.NombreEmprendimiento</p>
+        <h1>
+            <img src="~/images/calendar_1365377.png" alt="icono servicios" class="icono-titulo" />
+            Agenda tu cita
+        </h1>
+        <p class="descripcion-cita">
+            Aquí podrás reservar tu cita con @Model.NombreEmprendimiento. Primero selecciona el servicio que deseas,
+            luego el día en el calendario y finalmente el horario disponible que más te convenga.
+        </p>
 
         @if (TempData["Success"] != null)
         {
@@ -20,19 +26,11 @@
         {
             <div class="msg error">@TempData["Error"]</div>
         }
-
-        <section class="bloque">
-            <h3>📅 Indícanos el día</h3>
-            <div class="mes-nav">
-                <button type="button" id="btnMesAnterior">❮</button>
-                <span id="mesActual"></span>
-                <button type="button" id="btnMesSiguiente">❯</button>
-            </div>
-            <div id="diasContainer" class="chips"></div>
-        </section>
-
-        <section class="bloque">
-            <h3>🧰 Servicios disponibles</h3>
+         <section class="bloque">
+            <h3>
+                <img src="~/images/servicios.png" alt="icono servicios" class="icono-titulo" />
+                Servicios disponibles
+            </h3>
             <div id="serviciosContainer" class="chips">
                 @foreach (var servicio in Model.Servicios)
                 {
@@ -46,12 +44,36 @@
             </div>
         </section>
 
+        <section class="bloque">
+            <h3>
+                <img src="~/images/verhorario.png" alt="icono servicios" class="icono-titulo" />
+                Indícanos el día
+            </h3>
+            <div class="mes-nav">
+                <button type="button" id="btnMesAnterior">❮</button>
+                <span id="mesActual"></span>
+                <button type="button" id="btnMesSiguiente">❯</button>
+            </div>
+            <div id="diasContainer" class="chips"></div>
+        </section>
+
+       
+
         <section class="bloque" id="bloqueHoras" style="display:none;">
-            <h3>🕒 Horas disponibles</h3>
+            <h3>
+                <img src="~/images/horas.png" alt="icono servicios" class="icono-titulo" />
+                Horas disponibles
+            </h3>
 
             <div class="franjas">
-                <button type="button" id="btnManana" class="franja active">☀️ Mañana</button>
-                <button type="button" id="btnTarde" class="franja">🌙 Tarde</button>
+                <button type="button" id="btnManana" class="franja active">
+                    <img src="~/images/sun_1888313.png" alt="Mañana" class="icono-franja">
+                    Mañana
+                </button>
+                <button type="button" id="btnTarde" class="franja">
+                   <img src="~/images/cloudy-night_1582760.png" alt="Tarde" class="icono-franja">
+                    Tarde
+                </button>
             </div>
 
             <div id="mensajeSinDisponibilidad" class="msg error" style="display:none;">
@@ -68,6 +90,12 @@
         </div>
 
         <button type="button" id="btnAbrirModal" class="btn-confirmar" disabled>Confirmar</button>
+        <div>
+            <a asp-controller="Cliente" class="botonVolver"
+               asp-action="InicioCliente">
+                ← Volver a Portafolio de Servicios
+            </a>
+        </div>
 
         <form asp-controller="Citas" asp-action="Crear" method="post" id="formReserva">
             @Html.AntiForgeryToken()
@@ -104,6 +132,7 @@
         let franjaActual = "manana";
         let horasDisponibles = [];
         let fechaBase = new Date();
+        let fechasDisponibles = [];
 
         const nombresMeses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
         const nombresDias = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
@@ -141,6 +170,12 @@
                 btn.type = "button";
                 btn.className = "chip-dia";
 
+                // Si la fecha está disponible, aplica color especial
+                if (fechasDisponibles.includes(iso)) {
+                    btn.classList.add("disponible");
+                }
+
+
                 if (fechaSeleccionada === iso) {
                     btn.classList.add("active");
                 }
@@ -177,7 +212,11 @@
                 document.getElementById("HoraSeleccionada").value = "";
 
                 actualizarResumen();
+                cargarFechasDisponibles();
+
                 cargarHorasSiAplica();
+
+               
             });
         });
 
@@ -292,5 +331,17 @@
         };
 
         renderDias();
+
+            async function cargarFechasDisponibles() {
+            if (!servicioSeleccionado) return; // 👈 solo si ya eligió servicio
+
+            const url = `/Citas/ObtenerFechasDisponibles?emprendimientoId=${emprendimientoId}&servicioId=${servicioSeleccionado}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            fechasDisponibles = data || [];
+            renderDias(); // vuelve a pintar el calendario con colores
+        }
+
     </script>
 }

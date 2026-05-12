@@ -21,6 +21,7 @@
                asp-action="Index"
                asp-route-emprendimientoId="@Model.EmprendimientoId"
                asp-route-tab="configurar">
+                <img src="~/images/gear (2).png" alt="Configurar" class="icono-tab">
                 Configurar disponibilidad
             </a>
 
@@ -28,6 +29,7 @@
                asp-action="Index"
                asp-route-emprendimientoId="@Model.EmprendimientoId"
                asp-route-tab="horarios">
+                <img src="~/images/verhorario.png" alt="Horarios" class="icono-tab">
                 Horarios existentes
             </a>
         </div>
@@ -77,31 +79,29 @@
     {
         <div class="disp-header">
             <h2>Configurar disponibilidad</h2>
-            <p class="disp-subtitle">@nombreEmprendimiento</p>
+            <p class="disp-subtitle">Selecciona el día, el servicio y la hora para tu disponibilidad en @nombreEmprendimiento</p>
         </div>
 
         <form asp-action="Crear" method="post" class="disp-form">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="EmprendimientoId" />
             <input type="hidden" asp-for="DiaSeleccionado" id="DiaSeleccionado" />
+            <input type="hidden" asp-for="FechaSeleccionada" id="FechasSeleccionadas" />
+           
+
+            <script>
+                flatpickr("#FechasSeleccionadas", {
+                    mode: "multiple",          // permite seleccionar varias fechas
+                    dateFormat: "Y-m-d",       // formato que el servidor puede parsear
+                    locale: "es"               // idioma español
+                });
+            </script>
+            
 
             <div class="bloque">
                 <div class="bloque-titulo">
-                    <span>📅Indícanos el día</span>
-                </div>
-
-                <div class="calendario-header">
-                    <button type="button" id="btnMesAnterior" class="nav-mes">❮</button>
-                    <span id="mesActual" class="mes-actual"></span>
-                    <button type="button" id="btnMesSiguiente" class="nav-mes">❯</button>
-                </div>
-
-                <div id="diasContainer" class="dias-container" translate="no"></div>
-            </div>
-
-            <div class="bloque">
-                <div class="bloque-titulo">
-                    <span>🧰Servicios disponibles</span>
+                    <img src="~/images/servicios.png" alt="Calendario" class="icono-titulo">
+                    <span>Servicios disponibles</span>
                 </div>
 
                 <div class="servicios-grid" translate="no">
@@ -116,21 +116,74 @@
                     }
                 </div>
             </div>
+            <div class="bloque">
+                <div class="bloque-titulo">
+                    <img src="~/images/verhorario.png" alt="Calendario" class="icono-titulo">
+                    <span>Indícanos el día</span>
+                </div>
+
+                <div class="calendario-header">
+                    <button type="button" id="btnMesAnterior" class="nav-mes">❮</button>
+                    <span id="mesActual" class="mes-actual"></span>
+                    <button type="button" id="btnMesSiguiente" class="nav-mes">❯</button>
+                </div>
+
+                <div id="diasContainer" class="dias-container" translate="no"></div>
+            </div>
 
             <div class="bloque">
                 <div class="bloque-titulo">
-                    <span>🕒Define el rango de horas</span>
+                    <img src="~/images/horas.png" alt="Calendario" class="icono-titulo">
+                    <span>Define el rango de horas</span>
                 </div>
 
                 <div class="horas-row">
                     <div class="form-group">
                         <label asp-for="HoraInicio">Hora inicio</label>
-                        <input asp-for="HoraInicio" type="time" class="input-time" />
+                        <select id="HoraInicio" name="HoraInicio" class="select-hora">
+                            <option value="06:00">6:00 a. m.</option>
+                            <option value="07:00">7:00 a. m.</option>
+                            <option value="08:00" selected>8:00 a. m.</option>
+                            <option value="09:00">9:00 a. m.</option>
+                            <option value="10:00">10:00 a. m.</option>
+                            <option value="11:00">11:00 a. m.</option>
+                            <option value="12:00">12:00 p. m.</option>
+                            <option value="13:00">1:00 p. m.</option>
+                            <option value="14:00">2:00 p. m.</option>
+                            <option value="15:00">3:00 p. m.</option>
+                            <option value="16:00">4:00 p. m.</option>
+                            <option value="17:00">5:00 p. m.</option>
+                            <option value="18:00">6:00 p. m.</option>
+                            <option value="19:00">7:00 p. m.</option>
+                            <option value="20:00">8:00 p. m.</option>
+                            <option value="21:00">9:00 p. m.</option>
+                            <option value="22:00">10:00 p. m.</option>
+                            <option value="23:00">11:00 p. m.</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
                         <label asp-for="HoraFin">Hora fin</label>
-                        <input asp-for="HoraFin" type="time" class="input-time" />
+                        <select id="HoraFin" name="HoraFin" class="select-hora">
+                            <option value="06:00">6:00 a. m.</option>
+                            <option value="07:00">7:00 a. m.</option>
+                            <option value="08:00">8:00 a. m.</option>
+                            <option value="09:00">9:00 a. m.</option>
+                            <option value="10:00">10:00 a. m.</option>
+                            <option value="11:00">11:00 a. m.</option>
+                            <option value="12:00">12:00 p. m.</option>
+                            <option value="13:00">1:00 p. m.</option>
+                            <option value="14:00">2:00 p. m.</option>
+                            <option value="15:00">3:00 p. m.</option>
+                            <option value="16:00">4:00 p. m.</option>
+                            <option value="17:00">5:00 p. m.</option>
+                            <option value="18:00">6:00 p. m.</option>
+                            <option value="19:00" selected>7:00 p. m.</option>
+                            <option value="20:00">8:00 p. m.</option>
+                            <option value="21:00">9:00 p. m.</option>
+                            <option value="22:00">10:00 p. m.</option>
+                            <option value="23:00">11:00 p. m.</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -138,6 +191,12 @@
             <button type="submit" class="btn-guardar">
                 Guardar disponibilidad
             </button>
+            <div>
+                <a asp-controller="Emprendimientos" class="botonVolver"
+                   asp-action="InicioEmprendedor">
+                    ← Volver a Portafolio de Servicios
+                </a>
+            </div>
         </form>
     }
     else
@@ -156,7 +215,8 @@
                         <div class="horario-info">
                             <div class="horario-servicio">@item.Servicio?.Nombre</div>
                             <div class="horario-detalle">
-                                @TraducirDia(item.Dia) · @item.HoraInicio.ToString(@"hh\:mm") - @item.HoraFin.ToString(@"hh\:mm")
+                                @item.Fecha.ToString("dd/MM/yyyy") · @TraducirDia(item.Dia) · @item.HoraInicio.ToString(@"hh\:mm") - @item.HoraFin.ToString(@"hh\:mm")
+
                             </div>
                         </div>
 
@@ -228,11 +288,12 @@
 {
     <script>
         let fechaBase = new Date();
-        let fechaSeleccionada = null;
+        let fechasSeleccionadas = [];
 
         const diasContainer = document.getElementById("diasContainer");
         const mesActual = document.getElementById("mesActual");
         const inputDiaSeleccionado = document.getElementById("DiaSeleccionado");
+        const inputFechaSeleccionada = document.getElementById("FechaSeleccionada");
 
         const nombresMeses = [
             "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -276,20 +337,52 @@
                 btn.dataset.dayofweek = fecha.getDay();
                 btn.setAttribute("translate", "no");
 
-                if (fechaSeleccionada === iso) {
-                    btn.classList.add("selected");
+
+                if (fechasSeleccionadas.includes(iso)) {
+                btn.classList.add("selected");
                 }
+
 
                 btn.innerHTML = `
                     <span class="dia-nombre">${nombresDias[fecha.getDay()]}</span>
                     <span class="dia-numero">${String(dia).padStart(2, '0')}</span>
                 `;
 
-                btn.addEventListener("click", function () {
-                    fechaSeleccionada = this.dataset.fecha;
-                    inputDiaSeleccionado.value = this.dataset.dayofweek;
-                    renderDias();
-                });
+                // btn.addEventListener("click", function () {
+                // fechaSeleccionada = this.dataset.fecha;
+                // inputFechaSeleccionada.value = this.dataset.fecha; // 👈 esto es lo importante
+                // renderDias();
+                // });
+
+
+                       btn.addEventListener("click", function () {
+            const fecha = this.dataset.fecha;
+
+            if (fechasSeleccionadas.includes(fecha)) {
+                // Quitar selección
+                fechasSeleccionadas = fechasSeleccionadas.filter(f => f !== fecha);
+                this.classList.remove("selected");
+            } else {
+                // Agregar selección
+                fechasSeleccionadas.push(fecha);
+                this.classList.add("selected");
+            }
+
+            // 👇 Limpia los inputs previos
+            document.querySelectorAll("input[name='FechasSeleccionadas']").forEach(el => el.remove());
+
+            // 👇 Crea un hidden por cada fecha seleccionada
+            const form = document.querySelector("form.disp-form");
+            fechasSeleccionadas.forEach(f => {
+                const hidden = document.createElement("input");
+                hidden.type = "hidden";
+                hidden.name = "FechasSeleccionadas"; // mismo name que en el ViewModel
+                hidden.value = f;
+                form.appendChild(hidden);
+            });
+        });
+
+
 
                 diasContainer.appendChild(btn);
             }

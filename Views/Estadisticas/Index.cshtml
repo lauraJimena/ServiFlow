@@ -1,0 +1,162 @@
+﻿@model EstadisticasVM
+<link rel="stylesheet" href="~/css/Estadisticas.css" asp-append-version="true" />
+
+<section class="stats-container">
+
+    <div class="stats-header">
+        <h1>Estadísticas de @ViewBag.NombreEmprendimiento</h1>
+        <p>Resumen de rendimiento de tu emprendimiento</p>
+    </div>
+
+    <div class="stats-grid">
+
+        
+
+        <!-- CARD SECUNDARIA -->
+        <div class="stat-card small">
+            <img src="~/images/calendar_1365377.png" alt="icono servicios" class="icono-titulo" />
+            <h3>Total general de citas </h3>
+            <p class="stat-main">@Model.TotalGeneralCitas</p>
+        </div>
+        <!-- CARD PRINCIPAL -->
+        <div class="stat-card highlight">
+            <img src="~/images/trophy_1452071.png" alt="icono servicios" class="icono-titulo" />
+            <h3>Servicio más solicitado</h3>
+
+            @if (Model.TotalCitas > 0)
+            {
+                <p class="stat-main">@Model.ServicioMasSolicitado</p>
+                <span class="stat-sub">@Model.TotalCitas citas</span>
+            }
+            else
+            {
+                <p class="stat-empty">Aún no tienes citas registradas</p>
+            }
+        </div>
+
+        <!-- CARD ACCIÓN -->
+        <div class="stat-card action">
+            <img src="~/images/customer_3585921.png" alt="icono servicios" class="icono-titulo" />
+            <h3>Clientes</h3>
+            <p class="stat-desc">Consulta tu ranking de clientes</p>
+
+            <a asp-controller="Emprendimientos"
+               asp-action="RankingClientes"
+               asp-route-emprendimientoId="@Model.Id"
+               class="btn-stat">
+                Ver ranking
+            </a>
+        </div>
+        <div class="stat-card chart">
+            <h3>
+                <img src="~/images/market_9041301.png" alt="icono servicios" class="icono-titulo" />
+                Servicios más agendados
+            </h3>
+            <canvas id="graficoServicios"></canvas>
+        </div>
+
+    </div>
+
+</section>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const labels = @Html.Raw(Json.Serialize(ViewBag.ServiciosLabels));
+    const data = @Html.Raw(Json.Serialize(ViewBag.ServiciosData));
+
+    const ctx = document.getElementById('graficoServicios').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Citas',
+                data: data,
+                borderWidth: 2,
+                borderRadius: 10,
+
+                // 🎨 Color ServiFlow
+                backgroundColor: 'rgba(109, 40, 217, 0.7)',
+                borderColor: '#6D28D9',
+
+                // ✨ Glow efecto fake (hover)
+                hoverBackgroundColor: 'rgba(139, 92, 246, 0.9)'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            animation: {
+                duration: 1200,
+                easing: 'easeOutQuart'
+            },
+
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'white',
+                        font: {
+                            size: 14
+                        }
+                    }
+                }
+            },
+
+            scales: {
+                y: {
+                    beginAtZero: true,
+
+                    ticks: {
+                        stepSize: 1, // 👈 SOLO ENTEROS
+                        color: 'white',
+                        font: {
+                            size: 14
+                        }
+                    },
+
+                    grid: {
+                        color: 'rgba(255,255,255,0.08)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: 'white',
+                        font: {
+                            size: 14
+                        }
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        },
+
+        plugins: [{
+            // 🔥 Plugin para números animados encima de barras
+            id: 'labelsPlugin',
+            afterDatasetsDraw(chart) {
+                const { ctx } = chart;
+
+                chart.data.datasets.forEach((dataset, i) => {
+                    const meta = chart.getDatasetMeta(i);
+
+                    meta.data.forEach((bar, index) => {
+                        const value = dataset.data[index];
+
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = 'bold 14px Segoe UI';
+                        ctx.textAlign = 'center';
+
+                        ctx.fillText(value, bar.x, bar.y - 10);
+                    });
+                });
+            }
+        }]
+    });
+</script>

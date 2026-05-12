@@ -14,7 +14,7 @@ namespace ServiFlow.Models
         public Servicio? Servicio { get; set; }
 
         public DayOfWeek Dia { get; set; }
-
+        public DateTime Fecha { get; set; }
         public TimeSpan HoraInicio { get; set; }
         public TimeSpan HoraFin { get; set; }
     }

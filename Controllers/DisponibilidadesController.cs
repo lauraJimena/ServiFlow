@@ -14,8 +14,16 @@ namespace ServiFlow.Controllers
         {
             _context = context;
         }
+        public IActionResult LimpiarDisponibilidades()
+        {
+            _context.Disponibilidades.RemoveRange(_context.Disponibilidades);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
 
         [HttpGet]
+       
         public IActionResult Index(int emprendimientoId, int page = 1, string tab = "configurar")
         {
             var emprendimiento = _context.Emprendimientos
@@ -26,8 +34,38 @@ namespace ServiFlow.Controllers
 
             AsegurarServiciosBase(emprendimientoId);
 
-            var vm = ConstruirViewModel(emprendimientoId, page, tab);
+            var vm = new DisponibilidadVM
+            {
+                EmprendimientoId = emprendimientoId,
+                TabActiva = tab,
+                CurrentPage = page
+            };
+
             ViewBag.NombreEmprendimiento = emprendimiento.Nombre;
+
+            // Servicios activos
+            vm.Servicios = _context.Servicios
+                .Where(s => s.EmprendimientoId == emprendimientoId && s.Activo)
+                .OrderBy(s => s.Nombre)
+                .ToList();
+
+            // Disponibilidades ordenadas por fecha y hora
+            var horariosQuery = _context.Disponibilidades
+                .Include(d => d.Servicio)
+                .Where(d => d.EmprendimientoId == emprendimientoId);
+
+            vm.TotalItems = horariosQuery.Count();
+            vm.TotalPages = (int)Math.Ceiling((double)vm.TotalItems / vm.PageSize);
+            if (vm.TotalPages == 0) vm.TotalPages = 1;
+
+            vm.HorariosExistentes = horariosQuery
+                .AsEnumerable()                // 👈 fuerza el ordenamiento en memoria
+                .OrderBy(d => d.Fecha)
+                .ThenBy(d => d.HoraInicio)
+                .Skip((page - 1) * vm.PageSize)
+                .Take(vm.PageSize)
+                .ToList();
+
 
             return View(vm);
         }
@@ -43,7 +81,6 @@ namespace ServiFlow.Controllers
                 return NotFound();
 
             AsegurarServiciosBase(vm.EmprendimientoId);
-
             ViewBag.NombreEmprendimiento = emprendimiento.Nombre;
 
             vm.TabActiva = "configurar";
@@ -52,48 +89,21 @@ namespace ServiFlow.Controllers
                 .OrderBy(s => s.Nombre)
                 .ToList();
 
-            var horariosQuery = _context.Disponibilidades
-                .Include(d => d.Servicio)
-                .Where(d => d.EmprendimientoId == vm.EmprendimientoId);
-
-            vm.TotalItems = horariosQuery.Count();
-            vm.TotalPages = (int)Math.Ceiling((double)vm.TotalItems / vm.PageSize);
-            if (vm.TotalPages == 0) vm.TotalPages = 1;
-
-            vm.HorariosExistentes = horariosQuery
-                .ToList()
-                .OrderBy(d => d.Dia)
-                .ThenBy(d => d.HoraInicio)
-                .Take(vm.PageSize)
-                .ToList();
-
             if (vm.ServicioIdSeleccionado <= 0)
-            {
                 ModelState.AddModelError("", "Debes seleccionar un servicio.");
-            }
 
-            if (vm.DiaSeleccionado == null)
-            {
-                ModelState.AddModelError("", "Debes seleccionar un día.");
-            }
-
-            bool servicioValido = vm.Servicios.Any(s => s.Id == vm.ServicioIdSeleccionado);
-            if (!servicioValido)
-            {
-                ModelState.AddModelError("", "El servicio seleccionado no es válido para este emprendimiento.");
-            }
+            if (vm.FechasSeleccionadas == null || !vm.FechasSeleccionadas.Any())
+                ModelState.AddModelError("", "Debes seleccionar al menos una fecha.");
 
             if (vm.HoraFin <= vm.HoraInicio)
-            {
                 ModelState.AddModelError("", "La hora final debe ser mayor a la inicial.");
-            }
 
-            if (vm.DiaSeleccionado != null)
+            foreach (var fecha in vm.FechasSeleccionadas)
             {
                 var disponibilidadesExistentes = _context.Disponibilidades
                     .Where(d => d.EmprendimientoId == vm.EmprendimientoId
                              && d.ServicioId == vm.ServicioIdSeleccionado
-                             && d.Dia == vm.DiaSeleccionado.Value)
+                             && d.Fecha.Date == fecha.Date)
                     .ToList();
 
                 bool cruzaHorario = disponibilidadesExistentes.Any(d =>
@@ -101,30 +111,129 @@ namespace ServiFlow.Controllers
 
                 if (cruzaHorario)
                 {
-                    ModelState.AddModelError("", "Ya existe una disponibilidad que se cruza con ese rango.");
+                    ModelState.AddModelError("", $"Ya existe una disponibilidad que se cruza en {fecha:dd/MM/yyyy}.");
+                    continue;
                 }
+
+                var disponibilidad = new Disponibilidad
+                {
+                    EmprendimientoId = vm.EmprendimientoId,
+                    ServicioId = vm.ServicioIdSeleccionado,
+                    Fecha = fecha.Date,
+                    Dia = fecha.DayOfWeek,
+                    HoraInicio = vm.HoraInicio,
+                    HoraFin = vm.HoraFin
+                };
+
+                _context.Disponibilidades.Add(disponibilidad);
             }
 
             if (!ModelState.IsValid)
-            {
                 return View("Index", vm);
-            }
 
-            var disponibilidad = new Disponibilidad
-            {
-                EmprendimientoId = vm.EmprendimientoId,
-                ServicioId = vm.ServicioIdSeleccionado,
-                Dia = vm.DiaSeleccionado!.Value,
-                HoraInicio = vm.HoraInicio,
-                HoraFin = vm.HoraFin
-            };
-
-            _context.Disponibilidades.Add(disponibilidad);
             _context.SaveChanges();
-
-            TempData["Success"] = "Disponibilidad creada correctamente.";
+            TempData["Success"] = "Disponibilidades creadas correctamente.";
             return RedirectToAction("Index", new { emprendimientoId = vm.EmprendimientoId, tab = "horarios" });
         }
+
+
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Crear(DisponibilidadVM vm)
+        //{
+        //    var emprendimiento = _context.Emprendimientos
+        //        .FirstOrDefault(e => e.Id == vm.EmprendimientoId);
+
+        //    if (emprendimiento == null)
+        //        return NotFound();
+
+        //    AsegurarServiciosBase(vm.EmprendimientoId);
+
+        //    ViewBag.NombreEmprendimiento = emprendimiento.Nombre;
+
+        //    vm.TabActiva = "configurar";
+        //    vm.Servicios = _context.Servicios
+        //        .Where(s => s.EmprendimientoId == vm.EmprendimientoId && s.Activo)
+        //        .OrderBy(s => s.Nombre)
+        //        .ToList();
+
+        //    var horariosQuery = _context.Disponibilidades
+        //        .Include(d => d.Servicio)
+        //        .Where(d => d.EmprendimientoId == vm.EmprendimientoId);
+
+        //    vm.TotalItems = horariosQuery.Count();
+        //    vm.TotalPages = (int)Math.Ceiling((double)vm.TotalItems / vm.PageSize);
+        //    if (vm.TotalPages == 0) vm.TotalPages = 1;
+
+        //    vm.HorariosExistentes = horariosQuery
+        //        .ToList()
+        //        .OrderBy(d => d.Dia)
+        //        .ThenBy(d => d.HoraInicio)
+        //        .Take(vm.PageSize)
+        //        .ToList();
+
+        //    if (vm.ServicioIdSeleccionado <= 0)
+        //    {
+        //        ModelState.AddModelError("", "Debes seleccionar un servicio.");
+        //    }
+
+        //    if (vm.FechaSeleccionada == null)
+        //    {
+        //        ModelState.AddModelError("", "Debes seleccionar una fecha.");
+        //    }
+
+        //    bool servicioValido = vm.Servicios.Any(s => s.Id == vm.ServicioIdSeleccionado);
+        //    if (!servicioValido)
+        //    {
+        //        ModelState.AddModelError("", "El servicio seleccionado no es válido para este emprendimiento.");
+        //    }
+
+        //    if (vm.HoraFin <= vm.HoraInicio)
+        //    {
+        //        ModelState.AddModelError("", "La hora final debe ser mayor a la inicial.");
+        //    }
+
+        //    if (vm.DiaSeleccionado != null)
+        //    {
+        //        var disponibilidadesExistentes = _context.Disponibilidades
+        //            .Where(d => d.EmprendimientoId == vm.EmprendimientoId
+        //                     && d.ServicioId == vm.ServicioIdSeleccionado
+        //                     && d.Fecha.Date == vm.FechaSeleccionada.Value.Date)
+        //            .ToList();
+
+        //        bool cruzaHorario = disponibilidadesExistentes.Any(d =>
+        //            vm.HoraInicio < d.HoraFin && vm.HoraFin > d.HoraInicio);
+
+        //        if (cruzaHorario)
+        //        {
+        //            ModelState.AddModelError("", "Ya existe una disponibilidad que se cruza con ese rango.");
+        //        }
+        //    }
+
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View("Index", vm);
+        //    }
+
+
+        //    var disponibilidad = new Disponibilidad
+        //    {
+        //        EmprendimientoId = vm.EmprendimientoId,
+        //        ServicioId = vm.ServicioIdSeleccionado,
+        //        Fecha = vm.FechaSeleccionada!.Value.Date, // normaliza la fecha
+        //        Dia = vm.FechaSeleccionada.Value.DayOfWeek, // aquí guardas el día real
+        //        HoraInicio = vm.HoraInicio,
+        //        HoraFin = vm.HoraFin
+        //    };
+
+
+        //    _context.Disponibilidades.Add(disponibilidad);
+        //    _context.SaveChanges();
+
+        //    TempData["Success"] = "Disponibilidad creada correctamente.";
+        //    return RedirectToAction("Index", new { emprendimientoId = vm.EmprendimientoId, tab = "horarios" });
+        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]

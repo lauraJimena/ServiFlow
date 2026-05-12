@@ -29,6 +29,7 @@ main,
     min-height: 100vh;
     padding: 34px clamp(18px, 5vw, 75px) 70px;
     background: #070014;
+    margin-bottom:-40px;
 }
 
 .d-none {
@@ -321,7 +322,7 @@ main,
 }
 
 .servicio-card {
-    min-height: 350px;
+    min-height: 400px;
     padding: 20px;
     border: 1.8px solid rgba(190, 44, 255, 0.72);
     border-radius: 17px;
@@ -334,7 +335,7 @@ main,
 
 .servicio-img-upload {
     width: 100%;
-    height: 150px;
+    height: 230px;
     border: 2px dashed rgba(255, 255, 255, 0.58);
     border-radius: 16px;
     display: flex;
@@ -518,6 +519,7 @@ main,
 
     .servicios-grid {
         grid-template-columns: 1fr;
+       
     }
 
     .servicio-card {
@@ -555,4 +557,15 @@ main,
     .servicio-card {
         padding: 18px;
     }
+}
+.servicios-section {
+    margin-bottom:25px !important;
+    
+}
+.botonVolver {
+    width: auto !important;
+    padding:10px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(30) !important;
+    border-radius:20px;
 }

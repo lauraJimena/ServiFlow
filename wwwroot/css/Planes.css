@@ -1,0 +1,104 @@
+﻿/* CONTENEDOR */
+.planes-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 60px;
+}
+
+/* HERO */
+.planes-hero {
+    padding: 80px 0 40px;
+}
+
+    .planes-hero h1 {
+        font-size: 60px;
+        margin: 0;
+    }
+
+    .planes-hero p {
+        color: #cbd5f5;
+        margin-top: 10px;
+        margin-bottom:-40px;
+        font-size:20px;
+    }
+
+/* GRID */
+.planes-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    padding: 40px 20px;
+}
+
+/* CARD */
+.plan-card {
+    background: rgba(30, 41, 59, 0.6);
+    border-radius: 20px;
+    padding: 40px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: all 0.3s ease;
+}
+
+    .plan-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 0 25px rgba(109, 40, 217, 0.5);
+    }
+
+    /* PLAN PRO DESTACADO */
+    .plan-card.pro {
+        background: linear-gradient(135deg, #584FC4, #6D28D9);
+        color: white;
+    }
+
+    /* TITULOS */
+    .plan-card h2 {
+        margin-top: 0;
+    }
+
+.precio {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* LISTA */
+.plan-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.plan-card li {
+    margin: 12px 0;
+    font-size: 15px;
+}
+
+.plan-card .disabled {
+    opacity: 0.4;
+}
+
+/* BOTÓN */
+.btn-plan {
+    margin-top: 25px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+    .btn-plan.destacado {
+        background: white;
+        color: #6D28D9;
+    }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .planes-grid {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+}

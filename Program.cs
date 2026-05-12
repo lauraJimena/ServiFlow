@@ -38,4 +38,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 
+app.UseSession();
+
+
 app.Run();

@@ -1,12 +1,32 @@
 ﻿.perfil-container {
-    min-height: calc(100vh - 90px);
-    padding: 70px 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 40px;
 }
 
 .perfil-form {
-    max-width: 430px;
+    flex: 1;
+    max-width: 500px;
+}
+.perfil-imagen {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
+.perfil-imagen img {
+    width: 95%;
+    max-width: 480px;
+    filter: drop-shadow(0 0 10px rgba(128, 0, 255, 0.4));
+    transition: transform 0.3s ease;
+}
+
+    .perfil-imagen img:hover {
+        transform: scale(1.05);
+    }
 h2 {
     font-size: 50px;
     font-weight: 900;
@@ -176,3 +196,4 @@ input:-webkit-autofill:focus {
         padding: 50px 0 40px;
     }
 }
+

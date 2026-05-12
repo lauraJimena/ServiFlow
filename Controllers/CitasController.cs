@@ -2,8 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using ServiFlow.Data;
 using ServiFlow.Models;
-using ServiFlow.ViewModels;
 using ServiFlow.Services;
+using ServiFlow.ViewModels;
+using Twilio.TwiML.Voice;
 
 namespace ServiFlow.Controllers
 {
@@ -43,32 +44,54 @@ namespace ServiFlow.Controllers
 
             return View("~/Views/Cliente/Reservar.cshtml", vm);
         }
+        [HttpGet]
+        public IActionResult ObtenerFechasDisponibles(int emprendimientoId, int servicioId)
+        {
+            var fechas = _context.Disponibilidades
+                .Where(d => d.EmprendimientoId == emprendimientoId
+                         && d.ServicioId == servicioId)
+                .Select(d => d.Fecha.Date)
+                .Distinct()
+                .OrderBy(f => f)
+                .ToList();
+
+            // Devuelve en formato ISO (yyyy-MM-dd) para que el JS lo entienda fácil
+            var fechasISO = fechas.Select(f => f.ToString("yyyy-MM-dd"));
+            return Json(fechasISO);
+        }
+
 
         [HttpGet]
         public IActionResult ObtenerHorasDisponibles(int emprendimientoId, int servicioId, DateTime fecha)
         {
-            var diaSemana = fecha.DayOfWeek;
+            var fechaDia = fecha.Date;
+            var siguienteDia = fechaDia.AddDays(1);
+            var diaSemana = fechaDia.DayOfWeek;
 
+            // Traer disponibilidades (rango por fecha) y/o por día de semana, materializar y ordenar en memoria
             var disponibilidades = _context.Disponibilidades
                 .Where(d => d.EmprendimientoId == emprendimientoId
                          && d.ServicioId == servicioId
-                         && d.Dia == diaSemana)
-                .ToList()
+                         && d.Fecha >= fecha && d.Fecha < siguienteDia)
+                .AsEnumerable() // fuerza LINQ to Objects a partir de aquí
                 .OrderBy(d => d.HoraInicio)
                 .ToList();
 
             if (!disponibilidades.Any())
                 return Json(new List<object>());
 
+            // Obtener citas del día por rango
             var citasDelDia = _context.Citas
                 .Where(c => c.EmprendimientoId == emprendimientoId
                          && c.ServicioId == servicioId
-                         && c.Fecha.Date == fecha.Date)
+                         && c.Fecha >= fechaDia
+                         && c.Fecha < siguienteDia)
                 .ToList();
 
+            // Normalizar a minutos para evitar problemas con segundos
             var horasOcupadas = citasDelDia
-                .Select(c => c.Fecha.TimeOfDay)
-                .ToList();
+                .Select(c => TimeSpan.FromMinutes(Math.Floor(c.Fecha.TimeOfDay.TotalMinutes)))
+                .ToHashSet();
 
             var horasDisponibles = new List<object>();
 
@@ -78,14 +101,15 @@ namespace ServiFlow.Controllers
 
                 while (horaActual < disponibilidad.HoraFin)
                 {
-                    bool ocupada = horasOcupadas.Any(h => h == horaActual);
+                    var horaNormalizada = TimeSpan.FromMinutes(Math.Floor(horaActual.TotalMinutes));
+                    bool ocupada = horasOcupadas.Contains(horaNormalizada);
 
                     if (!ocupada)
                     {
                         horasDisponibles.Add(new
                         {
                             value = horaActual.ToString(@"hh\:mm"),
-                            text = DateTime.Today.Add(horaActual).ToString("h:mm tt")
+                            text = fechaDia.Add(horaActual).ToString("h:mm tt", System.Globalization.CultureInfo.InvariantCulture)
                         });
                     }
 
@@ -95,6 +119,7 @@ namespace ServiFlow.Controllers
 
             return Json(horasDisponibles);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -140,7 +165,7 @@ namespace ServiFlow.Controllers
             var disponibilidades = _context.Disponibilidades
                 .Where(d => d.EmprendimientoId == vm.EmprendimientoId
                          && d.ServicioId == vm.ServicioId
-                         && d.Dia == diaSemana)
+                         && d.Fecha.Date == vm.Fecha)
                 .ToList();
 
             bool estaDentroDeDisponibilidad = disponibilidades.Any(d =>

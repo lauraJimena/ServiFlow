@@ -41,11 +41,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 58px;
+    min-height: 38px;
     padding: 14px 20px;
     text-decoration: none;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 18px;
     color: #e6e6ff;
     background: transparent;
     transition: 0.25s ease;
@@ -62,7 +62,7 @@
     }
 
     .tab-segment.active {
-        background: linear-gradient(90deg, #7b2cff, #d414d4);
+        background: linear-gradient(135deg,#5152bc, #8e24aa);
         color: white;
         box-shadow: inset 0 -2px 0 rgba(255, 255, 255, 0.12);
     }
@@ -108,25 +108,27 @@
     background: transparent;
     border: none;
     color: white;
-    font-size: 1.6rem;
+    font-size: 0.9rem;
     cursor: pointer;
+    
 }
 
 .mes-actual {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 700;
-    min-width: 160px;
+    min-width: 150px;
 }
 
 .dias-container {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
+    font-size: 10px;
 }
 
 .dia-btn {
-    width: 74px;
-    min-height: 82px;
+    width: 40px;
+    min-height: 30px;
     border-radius: 16px;
     border: 2px solid #b77dff;
     background: transparent;
@@ -138,6 +140,7 @@
     justify-content: center;
     gap: 6px;
     transition: 0.2s ease;
+    
 }
 
     .dia-btn:hover {
@@ -146,19 +149,19 @@
     }
 
     .dia-btn.selected {
-        background: linear-gradient(90deg, #7b2cff, #d414d4);
+        background: linear-gradient(135deg,#5152bc, #8e24aa);
+        border: 4.5px solid #b77dff;
         color: white;
-        border-color: #b77dff;
-        font-weight: 700;
-        box-shadow: 0 0 15px rgba(123, 44, 255, 0.35);
+        filter: drop-shadow(0 0 7px rgba(108, 99, 255, 0.8)) drop-shadow(0 0 10px rgba(108, 99, 255, 0.5));
     }
+
 
 .dia-nombre {
     font-size: 0.95rem;
 }
 
 .dia-numero {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     font-weight: 700;
 }
 
@@ -187,7 +190,7 @@
         padding: 14px 18px;
         border-radius: 14px;
         border: 2px solid #b77dff;
-        background: transparent;
+        background-color: rgba(9, 31, 42, 0.3);
         color: white;
         font-weight: 700;
         transition: 0.2s ease;
@@ -198,10 +201,11 @@
         }
 
     .servicio-chip input:checked + span {
-        background: linear-gradient(90deg, #7b2cff, #d414d4);
-        color: white;
-        border-color: #b77dff;
-        box-shadow: 0 0 15px rgba(123, 44, 255, 0.35);
+        background: rgba(224, 230, 237, 0.75);
+        border: 4.5px solid #b77dff;
+        color: #040141;
+        box-shadow: 0 0 30px rgba(106, 27, 154, 0.6);
+        filter: drop-shadow(0 0 4px rgba(108, 99, 255, 0.6)) drop-shadow(0 0 10px rgba(108, 99, 255, 0.3));
     }
 
 .horas-row {
@@ -413,6 +417,7 @@
     .dia-btn {
         width: 68px;
         min-height: 76px;
+        background-color: rgba(9, 31, 42, 0.6) !important;
     }
 
     .mes-actual {
@@ -429,4 +434,36 @@
         margin: 8px 0;
         color: #ffe1e6;
         line-height: 1.4;
+    }
+
+
+.icono-tab {
+    width: 45px;
+    height: 42px;
+    vertical-align: middle;
+    margin-right: 8px;
+    filter: drop-shadow(0 0 4px rgba(108, 99, 255, 0.6)) drop-shadow(0 0 10px rgba(108, 99, 255, 0.3));
+}
+
+.icono-titulo {
+    width: 45px; /* ajusta tamaño */
+    height: 45px;
+    vertical-align: middle;
+    margin-right: 8px; /* espacio entre ícono y texto */
+    filter: drop-shadow(0 0 4px rgba(108, 99, 255, 0.6)) drop-shadow(0 0 10px rgba(108, 99, 255, 0.3));
+}
+.select-hora {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.18);
+    backdrop-filter: blur(8px);
+    font-size: 15px;
+}
+
+    .select-hora option {
+        background: #0f2230;
+        color: #fff;
     }

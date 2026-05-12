@@ -11,7 +11,14 @@ public class HomeController : Controller
     {
         _context = context;
     }
-
+    public IActionResult Somos()
+    {
+        return View();
+    }
+    public IActionResult Planes()
+    {
+        return View();
+    }
     public IActionResult Index(int page = 1)
     {
         int pageSize = 10;

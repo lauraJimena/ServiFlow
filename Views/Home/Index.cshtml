@@ -1,9 +1,10 @@
 ﻿@{
     ViewData["Title"] = "Inicio";
 }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 <link rel="stylesheet" href="~/css/Index.css" asp-append-version="true" />
 <div class="container-fluid p-0">
-    <div id="carouselExample" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
+    <div id="carouselExample" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="2500">
     <div class="carousel-inner">
 
         <div class="carousel-item active">
@@ -46,29 +47,42 @@
 </div>
 
 <div class="container mt-5 text-center info-section fondo-tarjetas">
-    <h2>¿Qué es ServiFlow?</h2>
+    <h2 class="titulo-con-icono">
+        <img src="~/images/pensar.png" alt="Icono Info" class="icono-titulo" />
+        ¿Qué es ServiFlow?
+    </h2>
     <p>Plataforma para gestionar citas de servicios de belleza de forma fácil y rápida.</p>
 </div>
+
 
 <div class="container mt-5">
     <div class="row justify-content-center g-4 cards-section">
         <div class="col-md-6 d-flex justify-content-center">
             <div class="info-card card-left">
-                <h3>Cliente</h3>
+                <h3 class="titulo-con-icono">
+                    <img src="~/images/cliente.png" alt="Icono Cliente" class="icono-titulo" />
+                    Cliente
+                </h3>
                 <p>Reserva citas, consulta disponibilidad y organiza tus servicios.</p>
             </div>
         </div>
 
         <div class="col-md-6 d-flex justify-content-center">
             <div class="info-card card-right">
-                <h3>Emprendedor</h3>
+                <h3 class="titulo-con-icono">
+                    <img src="~/images/empren.png" alt="Icono Emprendedor" class="icono-titulo" />
+                    Emprendedor
+                </h3>
                 <p>Administra tu agenda, clientes y servicios en un solo lugar.</p>
             </div>
         </div>
     </div>
 </div>
 <div class="container mt-5 text-center fondo-tarjetas">
-    <h2>Empieza ahora</h2>
+    <h2 class="titulo-con-logo">
+        <img src="~/images/stars_6027745.png" alt="Logo" class="logo-titulo" />
+        Empieza ahora
+    </h2>
     <a class="btn btn-primary m-2" asp-controller="Usuarios" asp-action="Login">Iniciar sesión</a>
     <a class="btn btn-success m-2" asp-controller="Usuarios" asp-action="Registro">Crear cuenta</a>
 </div>

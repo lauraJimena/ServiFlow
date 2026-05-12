@@ -11,6 +11,8 @@ namespace ServiFlow.ViewModels
         public int ServicioIdSeleccionado { get; set; }
 
         public DayOfWeek? DiaSeleccionado { get; set; }
+        public DateTime? FechaSeleccionada { get; set; }
+        public List<DateTime> FechasSeleccionadas { get; set; } = new();
 
         public TimeSpan HoraInicio { get; set; }
         public TimeSpan HoraFin { get; set; }

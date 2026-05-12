@@ -2,6 +2,7 @@
     min-height: 100vh;
     padding: 90px 20px 40px;
     color: #fff;
+    margin-top:-50px;
 }
 
 .agenda-card {
@@ -33,10 +34,11 @@
     .bloque h3 {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
         margin-bottom: 16px;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         font-weight: 700;
+        letter-spacing:0.6px;
     }
 
 .mes-nav {
@@ -49,13 +51,13 @@
 }
 
     .mes-nav button {
-        width: 44px;
-        height: 44px;
+        width: 40px;
+        height: 40px;
         border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.18);
         background: rgba(255, 255, 255, 0.06);
         color: white;
-        font-size: 1.4rem;
+        font-size: 0.9rem;
         cursor: pointer;
         transition: 0.2s ease;
     }
@@ -96,14 +98,18 @@
         box-shadow: 0 0 14px rgba(155, 92, 255, 0.22);
     }
 
+.chip-servicio {
+    background-color: rgba(9, 31, 42, 0.2);
+}
 .chip-dia {
-    width: 74px;
-    min-height: 78px;
+    width: 40px;
+    min-height: 30px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 4px;
+    background-color: rgba(9, 31, 42, 0.3);
 }
 
     .chip-dia span:first-child {
@@ -131,21 +137,28 @@
     .chip-servicio.active,
     .hora-btn.active,
     .franja.active {
-        background: linear-gradient(90deg, #7b2cff, #d414d4);
-        border-color: #b77dff;
-        color: white;
-        box-shadow: 0 0 18px rgba(123, 44, 255, 0.35);
+        background: rgba(224, 230, 237, 0.75);
+        border: 4.5px solid #b77dff;
+        color: #040141;
+        box-shadow: 0 0 30px rgba(106, 27, 154, 0.6);
+        filter: drop-shadow(0 0 4px rgba(108, 99, 255, 0.6)) drop-shadow(0 0 10px rgba(108, 99, 255, 0.3));
     }
-
-.franjas {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
+.chip-dia.active {
+    background: linear-gradient(135deg,#5152bc, #8e24aa);
+    border: 4.5px solid #b77dff;
+    color: white;
+    filter: drop-shadow(0 0 7px rgba(108, 99, 255, 0.8)) drop-shadow(0 0 10px rgba(108, 99, 255, 0.5));
 }
 
+        .franjas {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
 .franja {
-    padding: 14px 24px;
+    padding: 8px 14px;
     min-width: 200px;
 }
 
@@ -156,15 +169,16 @@
 }
 
 .resumen {
-    margin-top: 24px;
-    padding: 16px;
+    margin-top: 20px;
+    padding: 13px;
+    padding-top:0px !important;
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.10);
 }
 
     .resumen p {
-        margin: 8px 0;
+        margin: 0px 0;
         color: #f2f2ff;
     }
 
@@ -343,4 +357,47 @@
     .btn-confirmar-modal {
         width: 100%;
     }
+}
+
+
+
+
+.chip-dia.disponible {
+    background: linear-gradient(135deg,#5152bc, #8e24aa);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 0 8px #4CAF50;
+}
+.icono-titulo {
+    width: 45px;
+    height: 45px;
+    margin-right: 8px;
+    vertical-align: middle;
+    filter: drop-shadow(0 0 4px rgba(108, 99, 255, 0.6)) drop-shadow(0 0 10px rgba(108, 99, 255, 0.3));
+}
+h1 {
+    text-shadow: 0 0 4px rgba(108, 99, 255, 0.6), 0 0 10px rgba(108, 99, 255, 0.3);
+}
+h1 img {
+    width: 55px !important;
+    height: 55px !important;
+    margin-right: 8px;
+    vertical-align: middle;
+    filter: drop-shadow(0 0 4px rgba(108, 99, 255, 0.6)) drop-shadow(0 0 10px rgba(108, 99, 255, 0.3));
+}
+.agenda-card p {
+    margin-top: 20px;
+    font-size: 18px;
+    text-align: center;
+    padding: 16px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.icono-franja {
+    width: 38px;
+    height: 38px;
+    vertical-align: middle;
+    margin-right: 8px;
+    filter: drop-shadow(0 0 6px #8000ff); /* glow morado */
 }

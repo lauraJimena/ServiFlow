@@ -1,10 +1,16 @@
-﻿
+﻿.empren {
+    margin-top: -80px;
+}
+.registro {
+    margin-top: 20px;
+}
 h2 {
     font-size: 50px;
     font-weight: 900;
     letter-spacing: 1px;
     text-shadow: 0 3px 0 rgba(0,0,0,.6);
     color: white;
+   
 }
 form{
    align-content:center;
@@ -34,7 +40,8 @@ label{
     color: white;
 }
 button{
-    margin-top:20px;
+    margin-top:10px;
+    margin-bottom:2px;
 }
 input::placeholder {
     color: rgba(255, 255, 255, 0.6);
@@ -81,6 +88,18 @@ input::placeholder {
     filter: drop-shadow(0 0 20px rgba(255, 0, 200, 0.3));
 }
 .registro-container{
-    margin-bottom:-50px;
-
+    height:auto;
+    margin-bottom:-40px;
+}
+.botonVolver{
+    margin-top:60px !important;
+}
+.btn-sec{
+    margin-bottom:30px;
+}
+select option{
+    color:#040141;
+}
+.btnEmp{
+    margin-top:35px !important;
 }

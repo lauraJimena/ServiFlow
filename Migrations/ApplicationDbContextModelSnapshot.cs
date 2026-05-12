@@ -90,6 +90,9 @@ namespace ServiFlow.Migrations
                     b.Property<int>("EmprendimientoId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("TEXT");
+
                     b.Property<TimeSpan>("HoraFin")
                         .HasColumnType("TEXT");
 
@@ -108,6 +111,33 @@ namespace ServiFlow.Migrations
                     b.ToTable("Disponibilidades");
                 });
 
+            modelBuilder.Entity("ServiFlow.Models.Emprendedor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("HorarioAtencion")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("InstagramUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Telefono")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Ubicacion")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Emprendedor");
+                });
+
             modelBuilder.Entity("ServiFlow.Models.Emprendimiento", b =>
                 {
                     b.Property<int>("Id")
@@ -119,6 +149,9 @@ namespace ServiFlow.Migrations
 
                     b.Property<string>("Descripcion")
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("EmprendedorId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("EsPropio")
                         .HasColumnType("INTEGER");
@@ -140,6 +173,8 @@ namespace ServiFlow.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmprendedorId");
 
                     b.HasIndex("UsuarioId");
 
@@ -326,9 +361,15 @@ namespace ServiFlow.Migrations
 
             modelBuilder.Entity("ServiFlow.Models.Emprendimiento", b =>
                 {
+                    b.HasOne("ServiFlow.Models.Emprendedor", "Emprendedor")
+                        .WithMany()
+                        .HasForeignKey("EmprendedorId");
+
                     b.HasOne("ServiFlow.Models.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Emprendedor");
 
                     b.Navigation("Usuario");
                 });

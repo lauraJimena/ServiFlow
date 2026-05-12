@@ -8,6 +8,7 @@ using ServiFlow.ViewModels;
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 
 namespace ServiFlow.Controllers
 {
@@ -26,8 +27,12 @@ namespace ServiFlow.Controllers
         {
             int pageSize = 10;
 
+            int? usuarioId = ObtenerUsuarioId();
+            if (usuarioId == null)
+                return Unauthorized();
+
             var query = _context.Emprendimientos
-                .Where(e => e.EsPropio);
+                .Where(e => e.EsPropio && e.UsuarioId == usuarioId);
 
             int totalItems = query.Count();
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
@@ -44,15 +49,28 @@ namespace ServiFlow.Controllers
             return View(emprendimientos);
         }
 
+
+        private int? ObtenerUsuarioId()
+        {
+            return HttpContext.Session.GetInt32("UsuarioIdNum");
+        }
+
         public IActionResult MisServicios()
         {
-            var misServicios = _context.Emprendimientos
-                .Where(e => e.EsPropio)
+            int? usuarioId = HttpContext.Session.GetInt32("UsuarioIdNum");
+            if (usuarioId == null)
+                return RedirectToAction("Login", "Usuarios");
+
+            var emprendimientos = _context.Emprendimientos
+                .Where(e => e.UsuarioId == usuarioId && e.EsPropio)
+                .Include(e => e.Servicios) // 👈 carga los servicios relacionados
                 .OrderBy(e => e.Id)
                 .ToList();
 
-            return View(misServicios);
+            return View(emprendimientos);
         }
+
+
 
         public IActionResult Create()
         {
@@ -66,17 +84,16 @@ namespace ServiFlow.Controllers
             if (!ModelState.IsValid)
                 return View(emprendimiento);
 
-            // 🔥 ESTA ES LA CLAVE
-            var usuarioIdString = HttpContext.Session.GetString("UsuarioId");
+            // 👇 Leer directamente el int desde sesión
+            int? usuarioId = HttpContext.Session.GetInt32("UsuarioIdNum");
 
-            if (string.IsNullOrEmpty(usuarioIdString) || !int.TryParse(usuarioIdString, out int usuarioId))
+            if (usuarioId == null)
             {
                 TempData["Error"] = "Sesión expirada";
                 return RedirectToAction("Login", "Usuarios");
             }
 
-            emprendimiento.UsuarioId = usuarioId;
-
+            emprendimiento.UsuarioId = usuarioId.Value;
             emprendimiento.EsPropio = true;
 
             if (ImagenArchivo != null && ImagenArchivo.Length > 0)
@@ -89,12 +106,18 @@ namespace ServiFlow.Controllers
 
             return RedirectToAction("Personalizar", new { id = emprendimiento.Id });
         }
+
         [HttpGet]
         public IActionResult Personalizar(int id)
         {
+            int? usuarioId = HttpContext.Session.GetInt32("UsuarioIdNum");
+            if (usuarioId == null)
+                return RedirectToAction("Login", "Usuarios");
+
             var emprendimiento = _context.Emprendimientos
                 .Include(e => e.Servicios)
-                .FirstOrDefault(e => e.Id == id);
+                .FirstOrDefault(e => e.Id == id && e.UsuarioId == usuarioId); // 👈 filtro por usuario
+
 
             if (emprendimiento == null)
                 return NotFound();
@@ -108,8 +131,12 @@ namespace ServiFlow.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Personalizar(PersonalizarEmprendimientoVM vm)
         {
+            int? usuarioId = HttpContext.Session.GetInt32("UsuarioIdNum");
+            if (usuarioId == null)
+                return RedirectToAction("Login", "Usuarios");
+
             var emprendimiento = _context.Emprendimientos
-                .FirstOrDefault(e => e.Id == vm.Id);
+                .FirstOrDefault(e => e.Id == vm.Id && e.UsuarioId == usuarioId); // 👈 filtro por usuario
 
             if (emprendimiento == null)
                 return NotFound();
@@ -126,9 +153,21 @@ namespace ServiFlow.Controllers
 
             if (vm.LogoArchivo != null && vm.LogoArchivo.Length > 0)
                 emprendimiento.LogoUrl = GuardarImagen(vm.LogoArchivo);
+            else
+                emprendimiento.LogoUrl = "/images/default.png";
 
             if (vm.BannerArchivo != null && vm.BannerArchivo.Length > 0)
+            {         
                 emprendimiento.BannerUrl = GuardarImagen(vm.BannerArchivo);
+                emprendimiento.ImagenUrl = GuardarImagen(vm.BannerArchivo);
+            }
+            else
+            {
+                emprendimiento.BannerUrl = GuardarImagen(vm.BannerArchivo);
+                emprendimiento.ImagenUrl = "/images/default.png";
+            }
+                
+
 
             _context.SaveChanges();
 
@@ -136,6 +175,7 @@ namespace ServiFlow.Controllers
 
             return RedirectToAction("Personalizar", new { id = vm.Id });
         }
+
 
         [HttpGet]
         public IActionResult Edit(int id)
@@ -179,7 +219,10 @@ namespace ServiFlow.Controllers
                 emprendimiento.LogoUrl = GuardarImagen(vm.LogoArchivo);
 
             if (vm.BannerArchivo != null && vm.BannerArchivo.Length > 0)
+            {
                 emprendimiento.BannerUrl = GuardarImagen(vm.BannerArchivo);
+                emprendimiento.ImagenUrl = GuardarImagen(vm.BannerArchivo);
+            }
 
             _context.SaveChanges();
 

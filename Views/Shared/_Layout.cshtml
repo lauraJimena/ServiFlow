@@ -38,24 +38,29 @@
 
             <!-- MENÚ -->
             <nav class="sf-menu">
-                <a class="sf-link" asp-controller="Home" asp-action="Somos">
-                    Quienes somos
-                </a>
+               
 
                 @if (!sesionActiva)
                 {
+                    
+                    <a class="sf-link" asp-controller="Home" asp-action="Somos">
+                        Quienes somos
+                    </a>
+                    <a class="sf-link" asp-controller="Home" asp-action="Planes">
+                        Planes
+                    </a>
                     <a class="sf-link" asp-controller="Usuarios" asp-action="Login">
                         Iniciar sesión
                     </a>
 
-                    <a class="sf-link" asp-controller="Usuarios" asp-action="Registro">
+                    <a class="sf-link iniciarSesion" asp-controller="Usuarios" asp-action="Registro">
                         Registrarse
                     </a>
                 }
-            </nav>
 
+            
             <!-- USUARIO LOGUEADO -->
-            <div class="sf-layout-auth">
+            
                 @if (sesionActiva)
                 {
                     <span class="sf-layout-user">
@@ -79,8 +84,8 @@
                         </button>
                     </form>
                 }
-            </div>
-
+            </nav>
+           
         </div>
     </header>
 
@@ -99,10 +104,56 @@
         </div>
     }
 
-    <footer>
-        <div class="container">
-            &copy; 2026 - ServiFlow -
-            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="sf-footer">
+        <div class="sf-footer-container">
+
+            <!-- Marca -->
+            <div class="sf-footer-brand">
+                <img src="~/images/logo_serviflow.png" alt="ServiFlow" />
+                <h5>ServiFlow</h5>
+                <p>Tu talento organizado, tus citas bajo control.</p>
+            </div>
+
+            <!-- Enlaces -->
+            <div class="sf-footer-links">
+                <h6>Enlaces</h6>
+                <a asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-house"></i> Inicio
+                </a>
+
+                <a asp-controller="Home" asp-action="Somos">
+                    <i class="bi bi-people"></i> Quiénes somos
+                </a>
+
+                <a asp-controller="Home" asp-action="Planes">
+                    <i class="bi bi-card-checklist"></i> Planes
+                </a>
+               
+            </div>
+
+            <!-- Soporte -->
+            <div class="sf-footer-links">
+                <h6>Soporte</h6>
+                <a href="#">
+                    <i class="bi bi-life-preserver"></i> Centro de ayuda
+                </a>
+
+                <a href="#">
+                    <i class="bi bi-envelope"></i> Contacto
+                </a>
+
+                <a href="#">
+                    <i class="bi bi-file-text"></i> Términos
+                </a>
+            </div>
+
+           
+
+        </div>
+
+        <!-- Línea inferior -->
+        <div class="sf-footer-bottom">
+            <p>&copy; 2026 ServiFlow. Todos los derechos reservados.</p>
         </div>
     </footer>
 

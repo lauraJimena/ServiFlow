@@ -40,6 +40,7 @@ namespace ServiFlow.Controllers
         {
             var emprendimiento = _context.Emprendimientos
                 .Include(e => e.Servicios)
+                .Include(e => e.Usuario)
                 .FirstOrDefault(e => e.Id == id && e.EsPropio);
 
             if (emprendimiento == null)
@@ -71,7 +72,9 @@ namespace ServiFlow.Controllers
                     : calificaciones
                         .Where(c => c.UsuarioId == usuarioId.Value)
                         .Select(c => (int?)c.Valor)
-                        .FirstOrDefault()
+                        .FirstOrDefault(),
+                NombreEmprendedor = emprendimiento.Usuario.Nombre,            
+                TelefonoContacto = emprendimiento.Usuario.Telefono
             };
 
             return View(vm);

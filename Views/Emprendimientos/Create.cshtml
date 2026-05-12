@@ -5,7 +5,7 @@
 
     <!-- FORMULARIO -->
     <div class="registro-form">
-<h2>Crear Emprendimiento</h2>
+<h2 class="empren">Crear Emprendimiento</h2>
 
 <form asp-action="Create" method="post" enctype="multipart/form-data">
     <div>      
@@ -21,24 +21,24 @@
        
         <input asp-for="Descripcion" class="input-custom" placeholder="Descripción" />
     </div>
-    <div class="contenedor-file">
-        <label class="file-upload">
-            <input type="file" accept="image/*" name="ImagenArchivo" onchange="previewImagen(event)">
-            <span id="textoFile">Agrega una imagen para tu emprendimiento</span>
-        </label>
-
-        <img id="preview" class="preview-img" />
-    </div>
+   
 
     <button type="submit">Guardar</button>
+            <div>
+                <a asp-controller="Emprendimientos" class="botonVolver btnEmp"
+                   asp-action="InicioEmprendedor">
+                    ← Volver a Portafolio de Servicios
+                </a>
+            </div>
     
 </form>
     </div>
 
     <!-- IMAGEN -->
-    <div class="registro-img">
+    <div class="registro-img crearImg">
         <img src="~/images/crear.png" alt="Registro ServiFlow" class="img-crear">
     </div>
+    
 
 </div>
 

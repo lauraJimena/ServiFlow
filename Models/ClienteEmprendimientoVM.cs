@@ -21,5 +21,11 @@
         public int TotalCalificaciones { get; set; }
 
         public int? MiCalificacion { get; set; }
+
+        //DATOS EMPRENDEDOR
+        public string? NombreEmprendedor { get; set; }
+       
+        public string? TelefonoContacto { get; set; }
+
     }
 }

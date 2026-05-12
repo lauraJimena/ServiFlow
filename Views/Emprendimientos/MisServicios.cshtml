@@ -56,12 +56,12 @@
                                        class="ms-btn ms-btn-soft">
                                         Abrir Kanban
                                     </a>
-
-                                    <a asp-controller="Emprendimientos"
-                                       asp-action="RankingClientes"
+                                 
+                                    <a asp-controller="Estadisticas"
+                                       asp-action="Index"
                                        asp-route-emprendimientoId="@item.Id"
-                                       class="ms-btn ms-btn-soft">
-                                        Ranking clientes
+                                       class="ms-btn ms-btn-soft">                                        
+                                        Ver estadísticas
                                     </a>
 
                                     <a asp-action="Edit"
@@ -81,6 +81,7 @@
                                             Eliminar
                                         </button>
                                     </form>
+
                                 </td>
                             </tr>
                         }
@@ -96,6 +97,12 @@
                 <a asp-action="Create" class="ms-btn-crear">Crear nuevo</a>
             </div>
         }
+    </div>
+    <div>
+        <a asp-controller="Emprendimientos" class="botonVolver"
+           asp-action="InicioEmprendedor">
+            ← Volver a Portafolio de Servicios
+        </a>
     </div>
 </section>
 

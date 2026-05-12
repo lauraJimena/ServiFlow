@@ -29,14 +29,15 @@
             <div class="card-content">
                 <h3 class="card-title">@e.Nombre</h3>
                 <span class="card-sub">@e.TipoServicio</span>
-                <p class="card-desc">@e.Descripcion</p>
+                
 
                 <div class="card-buttons">
                     <a class="btn-card btn-reservar"
                        asp-controller="Cliente"
                        asp-action="Detalle"
                        asp-route-id="@e.Id">
-                        Ver emprendimiento
+                        <img src="~/images/eye_15114615.png" alt="Crear" class="icono-img">
+                        Ver 
                     </a>
 
                     

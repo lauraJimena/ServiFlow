@@ -21,8 +21,13 @@ namespace ServiFlow.Models
         public int? UsuarioId { get; set; }
         public Usuario? Usuario { get; set; }
 
+        
+       
+        
+
         public List<TareaKanban> TareasKanban { get; set; } = new();
         public List<Disponibilidad> Disponibilidades { get; set; } = new();
         public List<Servicio> Servicios { get; set; } = new();
+        
     }
 }

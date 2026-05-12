@@ -42,6 +42,7 @@ namespace ServiFlow.Controllers
             }
 
             HttpContext.Session.SetString("UsuarioId", usuario.Id.ToString());
+            HttpContext.Session.SetInt32("UsuarioIdNum", usuario.Id);
             HttpContext.Session.SetString("UsuarioNombre", usuario.Nombre);
             HttpContext.Session.SetString("UsuarioEmail", usuario.Email);
             HttpContext.Session.SetString("TipoUsuario", usuario.TipoUsuario);
