@@ -36,6 +36,7 @@ namespace ServiFlow.Controllers
             return View(emprendimientos);
         }
 
+
         public IActionResult Detalle(int id)
         {
             var emprendimiento = _context.Emprendimientos

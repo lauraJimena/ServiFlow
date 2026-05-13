@@ -62,6 +62,31 @@ namespace ServiFlow.Controllers
             return View(emprendimientos);
         }
 
+        public IActionResult EliminarServicioPorNombre(string nombre)
+        {
+            nombre = "Depilación Cejas";
+            var servicio = _context.Servicios
+                .Include(s => s.Citas) // 👈 trae las citas relacionadas
+                .FirstOrDefault(s => s.Nombre == nombre);
+
+            if (servicio == null)
+            {
+                return NotFound($"No se encontró el servicio con nombre {nombre}");
+            }
+
+            // Elimina las citas asociadas
+            if (servicio.Citas.Any())
+            {
+                _context.Citas.RemoveRange(servicio.Citas);
+            }
+
+            // Elimina el servicio
+            _context.Servicios.Remove(servicio);
+            _context.SaveChanges();
+
+            return RedirectToAction("MisServicios"); // redirige a tu vista de servicios
+        }
+
 
         private int? ObtenerUsuarioId()
         {
