@@ -22,14 +22,27 @@ namespace ServiFlow.Controllers
             _context = context;
             _environment = environment;
         }
+        public void BorrarCitasPasadas()
+        {
+            var hoy = DateTime.Today;
+
+            var citasPasadas = _context.Citas
+                .Where(c => c.Fecha < hoy)
+                .ToList();
+
+            if (citasPasadas.Any())
+            {
+                _context.Citas.RemoveRange(citasPasadas);
+                _context.SaveChanges();
+            }
+        }
 
         public IActionResult InicioEmprendedor(int page = 1)
         {
             int pageSize = 10;
 
             int? usuarioId = ObtenerUsuarioId();
-            if (usuarioId == null)
-                return Unauthorized();
+           
 
             var query = _context.Emprendimientos
                 .Where(e => e.EsPropio && e.UsuarioId == usuarioId);
@@ -163,7 +176,7 @@ namespace ServiFlow.Controllers
             }
             else
             {
-                emprendimiento.BannerUrl = GuardarImagen(vm.BannerArchivo);
+                emprendimiento.BannerUrl = "/images/default.png";
                 emprendimiento.ImagenUrl = "/images/default.png";
             }
                 

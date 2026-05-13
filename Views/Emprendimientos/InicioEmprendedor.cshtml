@@ -4,11 +4,51 @@
 <section class="page-container">
 <section class="hero">
     <div class="hero-header">
-        <div class="hero-text">
+            <div class="hero-text">
+                <h1>Portafolio de mis Emprendimientos</h1>
 
-            <h1>Portafolio de Servicios</h1>
-            <p class="hero-subtitle">A continuación se muestran los emprendimientos que tienes registrados en ServiFlow</p>
-        </div>
+                @if (Model != null && Model.Any())
+                {
+                    <p class="hero-subtitle">
+                        A continuación se muestran los emprendimientos que tienes registrados en ServiFlow
+                    </p>
+                }
+                else
+                {
+                    <p class="hero-subtitle">
+                        Aún no tienes emprendimientos registrados
+                    </p>
+
+                    <!-- Modal invitación -->
+                    <div class="modal fade" id="crearEmprendimientoModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content fondo-tarjetas">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">¡Bienvenido a ServiFlow!</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <p>Empieza creando tu primer emprendimiento para gestionar tus servicios.</p>
+                                    <a class="btn btn-primary"
+                                       asp-controller="Emprendimientos"
+                                       asp-action="Create">
+                                        Crear emprendimiento
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            var modal = new bootstrap.Modal(document.getElementById('crearEmprendimientoModal'));
+                            modal.show();
+                        });
+                    </script>
+                }
+            </div>
+
+
         <div class="acciones-header">
             <a class="btn-crear-main"
                asp-controller="Emprendimientos"

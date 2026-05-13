@@ -26,23 +26,31 @@
         {
             <div class="msg error">@TempData["Error"]</div>
         }
-         <section class="bloque">
+        <section class="bloque">
             <h3>
                 <img src="~/images/servicios.png" alt="icono servicios" class="icono-titulo" />
                 Servicios disponibles
             </h3>
             <div id="serviciosContainer" class="chips">
-                @foreach (var servicio in Model.Servicios)
+                @if (Model.Servicios != null && Model.Servicios.Any())
                 {
-                    <button type="button"
-                            class="chip-servicio"
-                            data-servicio-id="@servicio.Id"
-                            data-servicio-nombre="@servicio.Nombre">
-                        @servicio.Nombre
-                    </button>
+                    @foreach (var servicio in Model.Servicios)
+                    {
+                        <button type="button"
+                                class="chip-servicio"
+                                data-servicio-id="@servicio.Id"
+                                data-servicio-nombre="@servicio.Nombre">
+                            @servicio.Nombre
+                        </button>
+                    }
+                }
+                else
+                {
+                    <p class="mensaje-vacio">No hay servicios disponibles</p>
                 }
             </div>
         </section>
+
 
         <section class="bloque">
             <h3>
@@ -158,6 +166,14 @@
 
             const ultimoDia = new Date(year, month + 1, 0).getDate();
 
+            // 👇 Caso 1: aún no se ha seleccionado servicio
+            if (!servicioSeleccionado) {
+                cont.innerHTML = '<p class="mensaje-vacio">Selecciona un servicio</p>';
+                return;
+            }
+
+            let hayDisponibles = false;
+
             for (let dia = 1; dia <= ultimoDia; dia++) {
                 const fecha = new Date(year, month, dia);
                 fecha.setHours(0, 0, 0, 0);
@@ -170,11 +186,10 @@
                 btn.type = "button";
                 btn.className = "chip-dia";
 
-                // Si la fecha está disponible, aplica color especial
                 if (fechasDisponibles.includes(iso)) {
                     btn.classList.add("disponible");
+                    hayDisponibles = true;
                 }
-
 
                 if (fechaSeleccionada === iso) {
                     btn.classList.add("active");
@@ -197,7 +212,14 @@
 
                 cont.appendChild(btn);
             }
+
+            // 👇 Caso 2: sí hay servicio pero no hay fechas disponibles
+            if (!hayDisponibles) {
+                cont.innerHTML = '<p class="mensaje-vacio">No hay fechas disponibles</p>';
+            }
         }
+
+
 
         document.querySelectorAll(".chip-servicio").forEach(btn => {
             btn.addEventListener("click", () => {

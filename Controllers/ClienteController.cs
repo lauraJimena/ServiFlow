@@ -16,7 +16,7 @@ namespace ServiFlow.Controllers
 
         public IActionResult InicioCliente(int page = 1)
         {
-            int pageSize = 10;
+            int pageSize = 8;
 
             var query = _context.Emprendimientos
                 .Where(e => e.EsPropio);

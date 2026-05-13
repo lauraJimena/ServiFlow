@@ -445,6 +445,26 @@ main,
 .empty-card {
     pointer-events: none;
 }
+.preview-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #cbb2ff;
+    font-weight: 500;
+}
+
+.icono-plus {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 0 6px #6a00ff);
+    transition: transform 0.3s ease;
+}
+
+    .icono-plus:hover {
+        transform: scale(1.1);
+    }
 
 /* TABLET */
 @media screen and (max-width: 1180px) {
